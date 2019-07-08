@@ -67,7 +67,7 @@ public class MainMenuSceneBuilder {
         });
 
         playerName.setText("hello " + player.getName());
-        playerName.setStyle("-fx-font-size: 50");
+        playerName.setStyle("-fx-font-size: 50 ; -fx-fill: White");
         VBox vbox = new VBox(6);
         vbox.getChildren().addAll(playerName,changbut, resumeBut, startBut, ratBut, settingsBut, exitBut);
 
