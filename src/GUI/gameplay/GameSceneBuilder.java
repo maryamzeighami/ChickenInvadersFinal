@@ -328,7 +328,6 @@ public class GameSceneBuilder {
         KeyFrame throwKeyFrame = new KeyFrame(Duration.millis(1000), event -> {
 
             for (int i = 0; i < chickens.size(); i++) {
-                System.out.println(chickens.get(i).getClass());
                 thowEgg(chickens.get(i));
                 throwSeed(chickens.get(i));
             }
