@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement />
+  <nodes>
+    <node x="277.0" y="0.0">models.Game</node>
+    <node x="265.0" y="437.0">models.AttackSystem</node>
+    <node x="125.0" y="685.0">models.Fire</node>
+    <node x="597.0" y="585.0">Controller.Settings</node>
+    <node x="0.0" y="585.0">models.Chicken</node>
+    <node x="0.0" y="0.0">models.Player</node>
+    <node x="0.0" y="685.0">models.Bomb</node>
+    <node x="0.0" y="437.0">models.SpaceShip</node>
+    <node x="451.0" y="585.0">GUI</node>
+    <node x="259.0" y="585.0">interfaces.Viewable</node>
+  </nodes>
+  <notes />
+  <edges />
+  <settings layout="Hierarchic Group" zoom="0.7491289198606271" x="286.5" y="267.0" />
+  <SelectedNodes>
+    <node>models.Game</node>
+  </SelectedNodes>
+  <Categories>
+    <Category>Fields</Category>
+    <Category>Methods</Category>
+  </Categories>
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+
