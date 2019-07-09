@@ -13,9 +13,8 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.shape.LineTo;
-import javafx.scene.shape.MoveTo;
-import javafx.scene.shape.Path;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
 import models.*;
@@ -36,6 +35,19 @@ public class GameSceneBuilder {
     Text scoreBox = new Text();
     ImageView seed;
     ImageView egg;
+
+    Media bombSound = new Media(new File(System.getProperty("user.dir") + "/src/sounds/bomb.wav").toURI().toString());
+    MediaPlayer bombPlayer = new MediaPlayer(bombSound);
+
+    Media catchSeedSound = new Media(new File(System.getProperty("user.dir") + "/src/sounds/seed.wav").toURI().toString());
+    MediaPlayer seedPlayer = new MediaPlayer(catchSeedSound);
+
+    Media shootSound = new Media(new File(System.getProperty("user.dir") + "/src/sounds/shoot.wav").toURI().toString());
+    MediaPlayer shootPlayer = new MediaPlayer(shootSound);
+
+    Media gameSound= new Media(new File(System.getProperty("user.dir") + "/src/sounds/gameSound.mp3").toURI().toString());
+    MediaPlayer gamePlayer = new MediaPlayer(gameSound);
+
 
     ArrayList<ImageView> stuff = new ArrayList<>();
 
@@ -65,6 +77,8 @@ public class GameSceneBuilder {
     SpaceShip spaceShip;
 
     public GameSceneBuilder builder(Player player) {
+
+        gamePlayer.play();
         currentPlayer = player;
 
         // resuummmmmm
@@ -192,6 +206,8 @@ public class GameSceneBuilder {
                 case ESCAPE:
                     // TODO: 4/21/2019 after pressing scape, the game should be paused!
                     timeline.pause();
+                    gamePlayer.pause();
+                    gamePlayer.getOnStopped();
                     save();
                     ExitMenuStage exitMenuStage = new ExitMenuStage();
                     exitMenuStage.Display();
@@ -425,9 +441,9 @@ public class GameSceneBuilder {
         if (flag) {
 
                 egg = new ImageView(new Image(new File(
-                        System.getProperty("user.dir") + "/src/pics/losing.png").toURI().toString()));
-                egg.setFitHeight(50);
-                egg.setFitWidth(50);
+                        System.getProperty("user.dir") + "/src/pics/lazer.png").toURI().toString()));
+                egg.setFitHeight(40);
+                egg.setFitWidth(40);
                 // todo fix the position
                 egg.setTranslateX(chicken.getTranslateX());
                 egg.setTranslateY(chicken.getTranslateY());
@@ -528,6 +544,7 @@ public class GameSceneBuilder {
     }
 
     public void getBomb() {
+
         Bomb bomb = new Bomb();
         bomb.setTranslateY(spaceShip.getTranslateY()+300);
         bomb.setTranslateX(spaceShip.getTranslateX());
@@ -543,6 +560,10 @@ public class GameSceneBuilder {
         transition.playFromStart();
         transition.statusProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue==Animation.Status.STOPPED){
+                // todo boooom!
+//                bomb.boom();
+                bombPlayer.seek(Duration.ZERO);
+                bombPlayer.play();
                 stackPane.getChildren().remove(bomb);
                 for (int i = chickens.size() - 1; i >= 0; i--) {
                     ImageView chicken = chickens.get(i);
@@ -670,9 +691,6 @@ public class GameSceneBuilder {
 
 
     public boolean isHit(ImageView view, Beam view2) {
-//        System.out.println("x:" + view.getTranslateX() + " \\ y:" + view.getTranslateY() + " \\ width:" + view.getFitWidth() + " \\ height:" + view.getFitHeight());
-//        System.out.println("x:" + view2.getTranslateX() + " \\ y:" + view2.getTranslateY() + " \\ width:" + view2.getWidth() + " \\ height:" + view2.getHeight());
-//        System.out.println();
 
         // 1 is pic and 2 is beam
         double x1 = view.getTranslateX(), x2 = view2.getTranslateX();
@@ -684,6 +702,11 @@ public class GameSceneBuilder {
         // only for straight arrows!
         /*if ((x1 < x2 && x2 < x1 + w1) && ((y2 > y1 && y2 < y1 + h1) || (y2 + h2 > y1 && y2 + h2 < y1 + h1)))
             return true;*/
+        if (Math.abs(x1-x2) < w1/2 + w2/2 && Math.abs(y1-y2) < h1/2 + h2/2){
+            shootPlayer.seek(Duration.ZERO);
+            shootPlayer.play();
+
+        }
         return Math.abs(x1-x2) < w1/2 + w2/2 && Math.abs(y1-y2) < h1/2 + h2/2;
 
         //return false;
@@ -706,6 +729,10 @@ public class GameSceneBuilder {
         // only for straight arrows!
         /*if ((x1 < x2 && x2 < x1 + w1) && ((y2 > y1 && y2 < y1 + h1) || (y2 + h2 > y1 && y2 + h2 < y1 + h1)))
             return true;*/
+        if (Math.abs(x1-x2) < w1/2 + w2/2 && Math.abs(y1-y2) < h1/2 + h2/2){
+            seedPlayer.seek(Duration.ZERO);
+            seedPlayer.play();
+        }
         return Math.abs(x1-x2) < w1/2 + w2/2 && Math.abs(y1-y2) < h1/2 + h2/2;
 
         //return false;

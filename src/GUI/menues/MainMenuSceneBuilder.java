@@ -11,6 +11,8 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.text.Text;
 import models.DataBase;
 import models.Player;
@@ -27,9 +29,13 @@ public class MainMenuSceneBuilder {
     private Button ratBut;
     private Button changbut;
     private Text playerName = new Text();
+    Media menueSound = new Media(new File(System.getProperty("user.dir") + "/src/sounds/menueSound.mp3").toURI().toString());
+    MediaPlayer menuePlayer = new MediaPlayer(menueSound);
 
 
     public MainMenuSceneBuilder build(Player player) {
+
+        menuePlayer.play();
 
         //buttons
         resumeBut = new Button("resume");
@@ -57,6 +63,8 @@ public class MainMenuSceneBuilder {
 
         //start
         startBut.setOnAction(event -> {
+            menuePlayer.pause();
+            menuePlayer.getOnStopped();
             Scene scene = new GameSceneBuilder().builder(player).getScene();
             MainStageHolder.stage.setScene(scene);
         });
