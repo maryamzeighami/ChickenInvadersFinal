@@ -43,7 +43,7 @@ public class EnemySystem {
 
                 }
                 break;
-
+//
             case 2:
 
                 for (int i = 0; i < numbers; i++) {
@@ -54,6 +54,14 @@ public class EnemySystem {
 
                     }
                 }
+//                for (int i = 0; i < numbers ; i++) {
+//                    if (numbers  2==1){
+//                        chickens[i] = new Chicken1();
+//                    } if (numbers% 2==0){
+//                        chickens[i]= new Chicken2();
+//                    }
+//
+//                }
                 break;
 
             case 3:
@@ -266,12 +274,16 @@ public class EnemySystem {
     }
     // todo giant
     public ArrayList<Chicken> getGiant(int level) {
-        ArrayList<Chicken> chickens= new ArrayList<>();
+
+        chickens=new Chicken[1];
+
+
         Giant giant=new Giant(level);
-        giant.setTranslateX(200);
-        giant.setTranslateY(200);
-        chickens.add(giant);
-        return chickens;
+        giant.setTranslateX(700);
+        giant.setTranslateY(700);
+        chickens[0]=giant;
+        return new ArrayList<Chicken>(Arrays.asList(chickens));
+
 
     }
 }

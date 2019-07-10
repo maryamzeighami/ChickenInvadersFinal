@@ -9,8 +9,8 @@ public class Chicken3 extends Chicken {
 
     static Image[] image= new Image[2];
     static {
-        image[0] = new Image(new File(System.getProperty("user.dir") + "/src/pics/head3.png").toURI().toString());
-        image[1] = new Image(new File(System.getProperty("user.dir") + "/src/pics/head2.png").toURI().toString());
+        image[0] = new Image(new File(System.getProperty("user.dir") + "/src/pics/head3B.png").toURI().toString());
+        image[1] = new Image(new File(System.getProperty("user.dir") + "/src/pics/head3.png").toURI().toString());
     }
     Chicken3(){
 
@@ -19,8 +19,11 @@ public class Chicken3 extends Chicken {
         level=3;
     }
     public void blink() {
-//        this.image = new ImageView(new Image(new File(System.getProperty("user.dir") + "/src/pics/head2.png").toURI().toString()));
-        setImage(new Image(new File(System.getProperty("user.dir") + "/src/pics/head2.png").toURI().toString()));
 
+        if (getImage()==image[0]) {
+            setImage(image[1]);
+        } else {
+            setImage(image[0]);
+        }
     }
 }

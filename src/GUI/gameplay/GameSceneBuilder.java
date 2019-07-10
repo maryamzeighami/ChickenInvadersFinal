@@ -1,6 +1,8 @@
 package GUI.gameplay;
 
 import Controller.Constants;
+import GUI.MainStageHolder;
+import GUI.menues.MainMenuSceneBuilder;
 import enums.BeamLevel;
 import enums.KeyState;
 import javafx.animation.*;
@@ -46,7 +48,7 @@ public class GameSceneBuilder {
     MediaPlayer shootPlayer = new MediaPlayer(shootSound);
 
     Media gameSound= new Media(new File(System.getProperty("user.dir") + "/src/sounds/gameSound.mp3").toURI().toString());
-    MediaPlayer gamePlayer = new MediaPlayer(gameSound);
+    MediaPlayer gameSoundPlayer = new MediaPlayer(gameSound);
 
 
     ArrayList<ImageView> stuff = new ArrayList<>();
@@ -55,7 +57,7 @@ public class GameSceneBuilder {
     int score;
     int coins = 0;
     int heartNum = 5;
-    int bomb = 3;
+    int numberOfBomb = 3;
 
     // texts
     Text heartText = new Text();
@@ -78,7 +80,7 @@ public class GameSceneBuilder {
 
     public GameSceneBuilder builder(Player player) {
 
-        gamePlayer.play();
+        gameSoundPlayer.play();
         currentPlayer = player;
 
         // resuummmmmm
@@ -107,7 +109,7 @@ public class GameSceneBuilder {
 
 
         // heart pic
-        String addrss = System.getProperty("user.dir") + "/src/pics/powerUp.png";
+        String addrss = System.getProperty("user.dir") + "/src/pics/heart.png";
         File file3 = new File(addrss);
         Image heart1 = new Image(file3.toURI().toString());
         ImageView heart = new ImageView(heart1);
@@ -156,7 +158,7 @@ public class GameSceneBuilder {
         HBox greenBox = new HBox();
         greenBox.setSpacing(5);
         Text bombText = new Text();
-        bombText.setText(Integer.toString(bomb));
+        bombText.setText(Integer.toString(numberOfBomb));
         bombText.setStyle("-fx-font-size: 35 ; -fx-fill: White");
         greenBox.getChildren().addAll(green, bombText);
 
@@ -206,8 +208,8 @@ public class GameSceneBuilder {
                 case ESCAPE:
                     // TODO: 4/21/2019 after pressing scape, the game should be paused!
                     timeline.pause();
-                    gamePlayer.pause();
-                    gamePlayer.getOnStopped();
+                    gameSoundPlayer.pause();
+                    gameSoundPlayer.getOnStopped();
                     save();
                     ExitMenuStage exitMenuStage = new ExitMenuStage();
                     exitMenuStage.Display();
@@ -223,12 +225,14 @@ public class GameSceneBuilder {
                     attackSystem.setLevel(BeamLevel.LEVEL_3);
                     break;
                 case B:
-                    getBomb();
-                    //todo killing anything and counting the score
+//                    if (numberOfBomb>0) {
+                        getBomb();
+                        //todo killing anything and counting the score
 
 
-                    bomb--;
-                    bombText.setText(Integer.toString(bomb));
+                        numberOfBomb--;
+                        bombText.setText(Integer.toString(numberOfBomb));
+//                    }
                     break;
             }
         });
@@ -285,8 +289,11 @@ public class GameSceneBuilder {
         KeyFrame hitKeyFrame = new KeyFrame(Duration.millis(25), event -> {
             for (int i = 0; i < chickens.size(); i++) {
                 if (isHitToChicken(chickens.get(i), spaceShip)) {
-                    System.out.println(chickens.get(i));
+
                     heartNum--;
+                    if (heartNum==0){
+                       defete();
+                    }
                     heartText.setText(Integer.toString(heartNum));
                     stackPane.getChildren().remove(spaceShip);
                     spaceShip.setTranslateX(0);
@@ -332,6 +339,7 @@ public class GameSceneBuilder {
                 }
             }
             checkChickens();
+
         });
 
 
@@ -351,11 +359,14 @@ public class GameSceneBuilder {
 
 
         //blink
-        // todo fixing keyframe
-        KeyFrame picFrame = new KeyFrame(Duration.millis(2000), event -> {
-            for (int i = 0; i < chickens.size(); i++) {
 
-                (chickens.get(i)).blink();
+        KeyFrame picFrame = new KeyFrame(Duration.millis(3000), event -> {
+            for (int i = 0; i < chickens.size(); i++) {
+                if (chickens.get(i) instanceof Giant){
+
+                }else {
+                    (chickens.get(i)).blink();
+                }
 
             }
         });
@@ -372,23 +383,32 @@ public class GameSceneBuilder {
         timeline1.playFromStart();
 
         Timeline timeline2 = new Timeline();
-        timeline2.getKeyFrames().addAll(moveKeyFrame);
+        timeline2.getKeyFrames().addAll(moveKeyFrame,picFrame);
         timeline2.setCycleCount(Timeline.INDEFINITE);
         timeline2.playFromStart();
 
 
         // mouse handler
         scene.setOnMouseMoved(event -> {
-            TranslateTransition transition = new TranslateTransition();
-            transition.setDuration(Duration.millis(5));
-            transition.setToX(event.getSceneX() - spaceShip.getLayoutX() - 65);
-            transition.setToY(event.getSceneY() - spaceShip.getLayoutY() - 65);
-            transition.setNode(spaceShip);
-            transition.playFromStart();
+
+            spaceShip.setTranslateX(event.getSceneX()-spaceShip.getLayoutX() - 65 );
+            spaceShip.setTranslateY(event.getSceneY()-spaceShip.getLayoutY() -65);
+
         });
 
 
         return this;
+    }
+
+    private void defete() {
+        if (heartNum==0){
+            MainStageHolder.stage.setScene(new LastSceneBuilder().build(currentPlayer,score,false).getScene());
+            gameSoundPlayer.pause();
+            seedPlayer.pause();
+            shootPlayer.pause();
+            //todo save
+            //save():
+        }
     }
 
     private void throwSeed(Chicken chicken) {
@@ -398,20 +418,19 @@ public class GameSceneBuilder {
                     System.getProperty("user.dir") + "/src/pics/seed.png").toURI().toString()));
             seed.setFitHeight(50);
             seed.setFitWidth(50);
-            // todo fix the position
+
             seed.setTranslateX(chicken.getTranslateX());
             seed.setTranslateY(chicken.getTranslateY());
 
             stackPane.getChildren().addAll(seed);
             stuff.add(seed);
-            System.out.println("thrown");
 
             TranslateTransition transition = new TranslateTransition();
             transition.setNode(seed);
-            transition.setDuration(Duration.millis(2000));
-            // todo fix the position
+            transition.setDuration(Duration.millis(3000));
+
             transition.setToY(Constants.GAME_SCENE_HEIGHT+200);
-            System.out.println("tra");
+
             transition.playFromStart();
         }
 
@@ -444,21 +463,20 @@ public class GameSceneBuilder {
                         System.getProperty("user.dir") + "/src/pics/lazer.png").toURI().toString()));
                 egg.setFitHeight(40);
                 egg.setFitWidth(40);
-                // todo fix the position
+
                 egg.setTranslateX(chicken.getTranslateX());
                 egg.setTranslateY(chicken.getTranslateY());
 
                 stackPane.getChildren().addAll(egg);
                 stuff.add(egg);
-                System.out.println("thrown egg");
-                //todo fixing the speed
+
                 TranslateTransition transition = new TranslateTransition();
                 transition.setNode(egg);
                 transition.setDuration(Duration.millis(2000));
-                // todo fix the position
+
 
                 transition.setToY(Constants.GAME_SCENE_HEIGHT);
-                System.out.println("tra");
+
                 transition.playFromStart();
 
         }
@@ -478,11 +496,16 @@ public class GameSceneBuilder {
 
                 if (isHitToSeed(spaceShip, view)) {
                     if (view.equals(seed)) {
-                        System.out.println("hit to seed");
                         coins++;
                         coinText.setText(Integer.toString(coins));
                     } else if (view.equals(egg)) {
                         heartNum--;
+                        if (heartNum==0){
+                            MainStageHolder.stage.setScene(MainMenuSceneBuilder.getScene());
+                            //todo save;
+                            gameSoundPlayer.pause();
+                            return;
+                        }
                         heartText.setText(Integer.toString(heartNum));
                         spaceShip.setTranslateX(Constants.GAME_SCENE_WIDTH / 2);
                         spaceShip.setTranslateY(Constants.GAME_SCENE_HEIGHT);
@@ -502,6 +525,9 @@ public class GameSceneBuilder {
             if (wave == 5) {
                 wave = 1;
                 level++;
+                if (level==5){
+                    win();
+                }
                 score = score + coins * 3;
                 coins = 0;
             }
@@ -509,9 +535,19 @@ public class GameSceneBuilder {
         }
     }
 
+    private void win() {
+        MainStageHolder.stage.setScene(new LastSceneBuilder().build(currentPlayer,score,true).getScene());
+        gameSoundPlayer.pause();
+        seedPlayer.pause();
+        shootPlayer.pause();
+        bombPlayer.pause();
+        //todo save
+        //save();
+    }
+
     private void getNextWave(int wave, int level) {
         if (wave == 1) {
-            getRec(10, level);
+            getRec(45, level);
         }
         if (wave == 2) {
             getRandom(8, level);
@@ -561,7 +597,7 @@ public class GameSceneBuilder {
         transition.statusProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue==Animation.Status.STOPPED){
                 // todo boooom!
-//                bomb.boom();
+//                bombNumber.boom();
                 bombPlayer.seek(Duration.ZERO);
                 bombPlayer.play();
                 stackPane.getChildren().remove(bomb);
@@ -624,6 +660,9 @@ public class GameSceneBuilder {
 
     public void getGiant(int level) {
         chickens = enemySystem.getGiant(level);
+
+        stackPane.getChildren().addAll(chickens);
+        System.out.println("giant");
     }
 
 
@@ -687,7 +726,7 @@ public class GameSceneBuilder {
         }
     }
 
-    // todo :blink
+
 
 
     public boolean isHit(ImageView view, Beam view2) {
@@ -699,9 +738,7 @@ public class GameSceneBuilder {
         double h1 = view.getFitHeight(), h2 = view2.getHeight();
 
 
-        // only for straight arrows!
-        /*if ((x1 < x2 && x2 < x1 + w1) && ((y2 > y1 && y2 < y1 + h1) || (y2 + h2 > y1 && y2 + h2 < y1 + h1)))
-            return true;*/
+
         if (Math.abs(x1-x2) < w1/2 + w2/2 && Math.abs(y1-y2) < h1/2 + h2/2){
             shootPlayer.seek(Duration.ZERO);
             shootPlayer.play();
@@ -709,33 +746,25 @@ public class GameSceneBuilder {
         }
         return Math.abs(x1-x2) < w1/2 + w2/2 && Math.abs(y1-y2) < h1/2 + h2/2;
 
-        //return false;
 
 
     }
 
     public boolean isHitToSeed(ImageView view, ImageView view2) {
-//        System.out.println("x:" + view.getTranslateX() + " \\ y:" + view.getTranslateY() + " \\ width:" + view.getFitWidth() + " \\ height:" + view.getFitHeight());
-//        System.out.println("x:" + view2.getTranslateX() + " \\ y:" + view2.getTranslateY() + " \\ width:" + view2.getWidth() + " \\ height:" + view2.getHeight());
-//        System.out.println();
 
-        // 1 is pic and 2 is beam
+
+
         double x1 = view.getTranslateX(), x2 = view2.getTranslateX();
         double y1 = view.getTranslateY() + view.getLayoutY(), y2 = view2.getTranslateY() + view2.getLayoutY();
         double w1 = view.getFitWidth(), w2 = view2.getFitWidth();
         double h1 = view.getFitHeight(), h2 = view2.getFitHeight();
 
 
-        // only for straight arrows!
-        /*if ((x1 < x2 && x2 < x1 + w1) && ((y2 > y1 && y2 < y1 + h1) || (y2 + h2 > y1 && y2 + h2 < y1 + h1)))
-            return true;*/
         if (Math.abs(x1-x2) < w1/2 + w2/2 && Math.abs(y1-y2) < h1/2 + h2/2){
             seedPlayer.seek(Duration.ZERO);
             seedPlayer.play();
         }
         return Math.abs(x1-x2) < w1/2 + w2/2 && Math.abs(y1-y2) < h1/2 + h2/2;
-
-        //return false;
 
 
     }
