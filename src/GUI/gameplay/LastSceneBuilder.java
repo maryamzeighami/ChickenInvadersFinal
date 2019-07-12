@@ -1,10 +1,7 @@
 package GUI.gameplay;
 
-import Controller.IO;
 import GUI.MainStageHolder;
 import GUI.menues.MainMenuSceneBuilder;
-import GUI.menues.choosePlayerScene.ChoosePlayerSceneBuilder;
-import com.sun.javaws.Main;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -15,7 +12,6 @@ import javafx.scene.layout.VBox;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.text.Text;
-import models.DataBase;
 import models.Player;
 
 import java.io.File;
@@ -57,17 +53,24 @@ public class LastSceneBuilder {
             defetingSoundPlayer.play();
             imageView = new ImageView(new Image(new File(System.getProperty("user.dir")
                     + "/src/pics/source.gif").toURI().toString()));
+            imageView.setFitWidth(600);
+            imageView.setFitHeight(600);
 
-        } if (flag){
+        }
+        if (flag){
             winningSoundPlayer.play();
             imageView=new ImageView(new Image(new File(System.getProperty("user.dir")
                     + "/src/pics/winning.png").toURI().toString()));
 
             message.setText("YOU MADE IT "+ player.getName()+ " !");
+
+            imageView.setFitWidth(600);
+            imageView.setFitHeight(600);
+
         }
 
-        imageView.setFitWidth(600);
-        imageView.setFitHeight(600);
+
+
 
         message.setStyle("-fx-fill: White; -fx-font-size: 40");
 
