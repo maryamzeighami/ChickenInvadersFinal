@@ -9,7 +9,7 @@ public class PowerUp extends ImageView {
 
     int type;
 
-    Image[] image = {new Image(new File(
+    static Image[] image = {new Image(new File(
             System.getProperty("user.dir") + "/src/pics/powerUp.png").toURI().toString()),
     new Image(new File(
             System.getProperty("user.dir") + "/src/pics/powerUp2.png").toURI().toString())};

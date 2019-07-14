@@ -37,7 +37,6 @@ public class GameSceneBuilder {
     Text scoreBox = new Text();
 
 
-
     Media bombSound = new Media(new File(System.getProperty("user.dir") + "/src/sounds/bomb.wav").toURI().toString());
     MediaPlayer bombPlayer = new MediaPlayer(bombSound);
 
@@ -125,7 +124,7 @@ public class GameSceneBuilder {
         megaSeed.setFitWidth(40);
 
         // green pic!
-        String gAdres = System.getProperty("user.dir") + "/src/pics/green2.gif";
+        String gAdres = System.getProperty("user.dir") + "/src/pics/bomb.png";
         File greenFile = new File(gAdres);
         Image greenImage = new Image(greenFile.toURI().toString());
         ImageView green = new ImageView(greenImage);
@@ -155,18 +154,18 @@ public class GameSceneBuilder {
         sc.setAlignment(Pos.BOTTOM_LEFT);
 
         // green VBox
-        HBox greenBox = new HBox();
-        greenBox.setSpacing(5);
+        HBox bombBox = new HBox();
+        bombBox.setSpacing(5);
         Text bombText = new Text();
         bombText.setText(Integer.toString(numberOfBomb));
         bombText.setStyle("-fx-font-size: 35 ; -fx-fill: White");
-        greenBox.getChildren().addAll(green, bombText);
+        bombBox.getChildren().addAll(green, bombText);
 
         // main VBox containing all info
         VBox mainVBox = new VBox();
         mainVBox.setSpacing(5);
         mainVBox.setAlignment(Pos.BOTTOM_LEFT);
-        mainVBox.getChildren().addAll(megaBox, heartBox, greenBox, sc);
+        mainVBox.getChildren().addAll(megaBox, heartBox, bombBox, sc);
 
         // space ship VBox (space ship and every thing attached to it is in this part)
         VBox infoVBox = new VBox();
@@ -295,9 +294,10 @@ public class GameSceneBuilder {
         // losing
         KeyFrame hitKeyFrame = new KeyFrame(Duration.millis(25), event -> {
             for (int i = 0; i < chickens.size(); i++) {
-                if (isHitToChicken(chickens.get(i), spaceShip)) {
+                if (isHitToChicken(chickens.get(i), spaceShip) && !spaceShip.haveSheild) {
 
                     heartNum--;
+                    spaceShip.haveSheild = true;
                     if (heartNum == 0) {
                         defete();
                     }
@@ -305,6 +305,26 @@ public class GameSceneBuilder {
                     stackPane.getChildren().remove(spaceShip);
                     spaceShip.setTranslateX(0);
                     spaceShip.setTranslateY(0);
+                    spaceShip.dontMove = true;
+
+                    new Thread(() -> {
+                        try {
+                            TimeUnit.MILLISECONDS.sleep(5000);
+                            spaceShip.haveSheild = false;
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }).start();
+
+                    new Thread(() -> {
+                        try {
+                            TimeUnit.MILLISECONDS.sleep(500);
+                            spaceShip.dontMove = false;
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }).start();
+
 
                 }
             }
@@ -372,6 +392,15 @@ public class GameSceneBuilder {
             }
         });
 
+        KeyFrame motion = new KeyFrame(Duration.millis(200), event -> {
+            for (int i = 0; i < chickens.size(); i++) {
+                if (chickens.get(i) instanceof Giant) {
+                      chickens.get(i).blink();
+                }
+
+            }
+        });
+
         //// timeline
         timeline = new Timeline();
         timeline.getKeyFrames().addAll(mainKeyFrame, killKeyFrame, shootKeyFrame, hitKeyFrame);
@@ -388,12 +417,18 @@ public class GameSceneBuilder {
         timeline2.setCycleCount(Timeline.INDEFINITE);
         timeline2.playFromStart();
 
+        Timeline timeline3 = new Timeline();
+        timeline3.getKeyFrames().addAll(motion);
+        timeline3.setCycleCount(Timeline.INDEFINITE);
+        timeline3.playFromStart();
+
 
         // mouse handler
         scene.setOnMouseMoved(event -> {
-
-            spaceShip.setTranslateX(event.getSceneX() - spaceShip.getLayoutX() - 65);
-            spaceShip.setTranslateY(event.getSceneY() - spaceShip.getLayoutY() - 65);
+            if (!spaceShip.dontMove) {
+                spaceShip.setTranslateX(event.getSceneX() - spaceShip.getLayoutX() - 65);
+                spaceShip.setTranslateY(event.getSceneY() - spaceShip.getLayoutY() - 65);
+            }
 
         });
 
@@ -415,10 +450,7 @@ public class GameSceneBuilder {
     private void throwSeed(Chicken chicken) {
 
         if (random.nextInt(1000) < 40) {
-//            seed = new ImageView(new Image(new File(
-//                    System.getProperty("user.dir") + "/src/pics/seed.png").toURI().toString()));
-//            seed.setFitHeight(50);
-//            seed.setFitWidth(50);
+
             Seed seed = new Seed();
 
             seed.setTranslateX(chicken.getTranslateX());
@@ -441,12 +473,12 @@ public class GameSceneBuilder {
 
     public void throwPoweUp(Chicken chicken) {
         if (random.nextInt(1000) < 15) {
-            PowerUp powerUp ;
+            PowerUp powerUp;
             if (random.nextInt(2) == 1) {
                 powerUp = new PowerUp(1);
 
             } else {
-                 powerUp = new PowerUp(2);
+                powerUp = new PowerUp(2);
             }
 
 
@@ -542,8 +574,8 @@ public class GameSceneBuilder {
                         spaceShip.setTranslateX(Constants.GAME_SCENE_WIDTH / 2);
                         spaceShip.setTranslateY(Constants.GAME_SCENE_HEIGHT);
                     } else if (view instanceof PowerUp) {
-                        if (((PowerUp) view).getType()==1){
-                            Constants.TEMPERATURE_LIMIT= Constants.TEMPERATURE_LIMIT+5;
+                        if (((PowerUp) view).getType() == 1) {
+                            Constants.TEMPERATURE_LIMIT = Constants.TEMPERATURE_LIMIT + 5;
                         } else {
                             //todo
                         }
@@ -662,7 +694,6 @@ public class GameSceneBuilder {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-//            recMove();
         }).start();
 
     }
@@ -684,7 +715,7 @@ public class GameSceneBuilder {
 
 
         stackPane.getChildren().addAll(chickens);
-//        randomMove();
+
 //        randomAttack();
     }
 
@@ -701,6 +732,7 @@ public class GameSceneBuilder {
 
         stackPane.getChildren().addAll(chickens);
         System.out.println("giant");
+        System.out.println(chickens.get(0));
     }
 
 

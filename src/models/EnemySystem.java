@@ -17,6 +17,9 @@ public class EnemySystem {
     int colum;
     Chicken[] chickens;
     Random random = new Random();
+    double teta=0;
+    int angle_velocity = 10;
+    double radiuse;
 
 
     public Chicken[] getChickens() {
@@ -110,8 +113,16 @@ public class EnemySystem {
 
     public ArrayList<Chicken> addCircle(int numbers, int level) {
         this.number=numbers;
-        //todo
-        return null;
+        chickens= new Chicken[numbers];
+        radiuse= (2*Math.PI) / chickens.length;
+
+        teta=(teta+ angle_velocity) % (2*Math.PI);
+        for (int i = 0; i <numbers ; i++) {
+            chickens[i]= new Chicken1();
+            chickens[i].setTranslateX(radiuse* Math.cos(teta));
+            chickens[i].setTranslateY(radiuse* Math.sin(teta));
+        }
+        return new ArrayList<Chicken>(Arrays.asList(chickens));
     }
 
 
@@ -194,9 +205,9 @@ public class EnemySystem {
         chickens = new Chicken[1];
 
 
-        Giant giant = new Giant(level);
-        giant.setTranslateX(700);
-        giant.setTranslateY(700);
+        Giant giant = new Giant(1);
+        giant.setTranslateX(0);
+        giant.setTranslateY(-100);
         chickens[0] = giant;
         return new ArrayList<Chicken>(Arrays.asList(chickens));
 

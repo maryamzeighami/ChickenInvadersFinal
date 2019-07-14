@@ -33,7 +33,7 @@ public class LastSceneBuilder {
 
 
 
-        goBackButton = new Button(" go back to main menue");
+        goBackButton = new Button(" go back to main menu");
 
         goBackButton.setMinHeight(20);
         goBackButton.setMinWidth(60);
