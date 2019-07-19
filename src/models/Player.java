@@ -3,7 +3,7 @@ package models;
 import java.io.Serializable;
 
 public class Player{
-    private Game currentGame = new Game();
+    private Game currentGame = null;
     private String name;
     private int score;
     private int coin;

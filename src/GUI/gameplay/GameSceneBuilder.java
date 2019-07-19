@@ -401,14 +401,12 @@ public class GameSceneBuilder {
             }
         });
 
-        KeyFrame saveKeyFrame = new KeyFrame(Duration.millis(25), event -> {
-            // TODO: 6/29/19 (SAVE_JSON)
-        });
+
 
 
         //// timeline
         timeline = new Timeline();
-        timeline.getKeyFrames().addAll(mainKeyFrame, killKeyFrame, shootKeyFrame, hitKeyFrame, saveKeyFrame);
+        timeline.getKeyFrames().addAll(mainKeyFrame, killKeyFrame, shootKeyFrame, hitKeyFrame);
         timeline.setCycleCount(Timeline.INDEFINITE);
         timeline.playFromStart();
 
@@ -855,7 +853,7 @@ public class GameSceneBuilder {
         Game game = new Game();
         game.spaceShip = this.spaceShip;
 //        game.chickens = this.chickens;
-        // TODO: 6/29/19 save scores and ....
+        // TODO: 6/29/19 save scores and .... (SAVE_JSON)
 
         currentPlayer.setCurrentGame(game);
     }

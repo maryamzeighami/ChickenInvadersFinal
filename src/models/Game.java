@@ -11,4 +11,12 @@ public class Game {
 
     // TODO: 6/29/19 (SAVE_JSON)
 
+
+    public Game() {
+    }
+
+    public void save(SpaceShip spaceShip, ArrayList<Chicken> chickens) {
+        this.spaceShip = spaceShip;
+        this.chickens = chickens;
+    }
 }
