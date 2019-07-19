@@ -19,7 +19,7 @@ public class MainStageHolder extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
 
-        IO.loadSavedData();
+//        IO.loadSavedData();
 
         stage = primaryStage;
         stage.setOnCloseRequest(event -> {

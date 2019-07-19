@@ -87,7 +87,7 @@ public class GameSceneBuilder {
             spaceShip = currentPlayer.getCurrentGame().spaceShip;
             chickens = currentPlayer.getCurrentGame().chickens;
 
-            // TODO: 6/29/19 scores and ...
+            // TODO: 6/29/19 (SAVE_JSON)
         }
 
 
