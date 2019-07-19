@@ -12,7 +12,7 @@ public class Chicken3 extends Chicken {
         image[0] = new Image(new File(System.getProperty("user.dir") + "/src/pics/head3B.png").toURI().toString());
         image[1] = new Image(new File(System.getProperty("user.dir") + "/src/pics/head3.png").toURI().toString());
     }
-    Chicken3(){
+   public Chicken3(){
 
         super(image[0]);
         health = 200;

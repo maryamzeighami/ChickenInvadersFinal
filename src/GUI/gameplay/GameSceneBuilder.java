@@ -86,6 +86,12 @@ public class GameSceneBuilder {
         if (currentPlayer.getCurrentGame() != null) {
             spaceShip = currentPlayer.getCurrentGame().spaceShip;
             chickens = currentPlayer.getCurrentGame().chickens;
+            level= currentPlayer.getCurrentGame().level;
+            wave= currentPlayer.getCurrentGame().wave;
+            score=currentPlayer.getCurrentGame().score;
+            coins=currentPlayer.getCurrentGame().numberOfSeeds;
+            heartNum=currentPlayer.getCurrentGame().healthNumber;
+            numberOfBomb=currentPlayer.getCurrentGame().numberOfBombs;
 
             // TODO: 6/29/19 (SAVE_JSON)
         }
@@ -626,7 +632,7 @@ public class GameSceneBuilder {
             getRandom(8, level);
         }
         if (wave == 3) {
-            getCircle(20, level);
+            getCircle(45, level);
         }
         if (wave == 4) {
             getGiant(level);
@@ -794,8 +800,34 @@ public class GameSceneBuilder {
                 //randomAttack();
                 break;
             case 3:
-                recMove();
+                circleMove();
                 break;
+        }
+    }
+
+    private void circleMove() {
+        for (int i = 0; i < chickens.size(); i++) {
+
+            double teta = Math.atan(chickens.get(i).getTranslateX()/ chickens.get(i).getTranslateY()) + Math.toDegrees(1);
+
+
+            TranslateTransition transition = new TranslateTransition();
+            transition.setNode(chickens.get(i));
+            transition.setDuration(Duration.millis(500));
+            if (i < 10) {
+                transition.setToX(150 * Math.cos(teta));
+                transition.setToY(150 * Math.sin(teta));
+            } else if (i<25){
+                transition.setToX(230 * Math.cos(teta));
+                transition.setToY(230 * Math.sin(teta));
+
+            } else {
+                transition.setToX(310 * Math.cos(teta));
+                transition.setToY(310 * Math.sin(teta));
+            }
+            transition.setCycleCount(1);
+            transition.playFromStart();
+
         }
     }
 
@@ -851,8 +883,43 @@ public class GameSceneBuilder {
 
     void save() {
         Game game = new Game();
+
         game.spaceShip = this.spaceShip;
-//        game.chickens = this.chickens;
+        game.score= this.score;
+        game.level= this.level;
+        game.wave= this.wave;
+        game.numberOfBombs= this.numberOfBomb;
+        game.numberOfSeeds=this.coins;
+        game.healthNumber= this.heartNum;
+
+        for (Chicken chicken : chickens) {
+            Chicken newChicken= null;
+
+
+            switch (chicken.getlevel()){
+                case 1:
+                    newChicken = new Chicken1();
+                    break;
+
+                case 2:
+                    newChicken = new Chicken2();
+                    break;
+                case 3:
+                    newChicken = new Chicken3();
+                    break;
+                case 4:
+                    newChicken= new Chicken4();
+                    break;
+                case 5:
+                    newChicken= new Giant(level);
+
+            }
+                newChicken.health=chicken.health;
+                newChicken.setTranslateX(chicken.getTranslateX());
+                newChicken.setTranslateY(chicken.getTranslateY());
+                game.chickens.add(newChicken);
+        }
+
         // TODO: 6/29/19 save scores and .... (SAVE_JSON)
 
         currentPlayer.setCurrentGame(game);

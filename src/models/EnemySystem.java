@@ -17,9 +17,9 @@ public class EnemySystem {
     int colum;
     Chicken[] chickens;
     Random random = new Random();
-    double teta=0;
-    int angle_velocity = 10;
-    double radiuse;
+    double teta = 0;
+    double angle_velocity;
+    double radiuse = 150;
 
 
     public Chicken[] getChickens() {
@@ -112,16 +112,58 @@ public class EnemySystem {
 
 
     public ArrayList<Chicken> addCircle(int numbers, int level) {
-        this.number=numbers;
-        chickens= new Chicken[numbers];
-        radiuse= (2*Math.PI) / chickens.length;
+        this.number = numbers;
+        chickens = new Chicken[numbers];
+        angle_velocity = (2 * Math.PI) / chickens.length;
 
-        teta=(teta+ angle_velocity) % (2*Math.PI);
-        for (int i = 0; i <numbers ; i++) {
-            chickens[i]= new Chicken1();
-            chickens[i].setTranslateX(radiuse* Math.cos(teta));
-            chickens[i].setTranslateY(radiuse* Math.sin(teta));
+        for (int i = 0; i < 45; i++) {
+            if (i < 10) {
+                angle_velocity= (2 * Math.PI) /10;
+
+                chickens[i] = new Chicken1();
+                chickens[i].setTranslateX(radiuse * Math.cos(teta));
+                chickens[i].setTranslateY(radiuse * Math.sin(teta));
+            } else if (i < 25) {
+                angle_velocity= (2 * Math.PI) /15;
+
+                chickens[i] = new Chicken2();
+                radiuse = 230;
+                chickens[i].setTranslateX(radiuse * Math.cos(teta));
+                chickens[i].setTranslateY(radiuse * Math.sin(teta));
+            } else if (i < 45) {
+                angle_velocity= (2 * Math.PI) /20;
+
+                chickens[i] = new Chicken3();
+                radiuse = 310;
+                chickens[i].setTranslateX(radiuse * Math.cos(teta));
+                chickens[i].setTranslateY(radiuse * Math.sin(teta));
+            }
+            teta = (teta + angle_velocity) % (2 * Math.PI);
+
         }
+//        for (int i = 0; i < 10; i++) {
+//            chickens[i] = new Chicken1();
+//            chickens[i].setTranslateX(radiuse * Math.cos(teta));
+//            chickens[i].setTranslateY(radiuse * Math.sin(teta));
+//            teta = (teta + angle_velocity) % (2 * Math.PI);
+//
+//        }
+//        radiuse= 180;
+//        for (int i = 10; i <25 ; i++) {
+//            chickens[i] = new Chicken2();
+//            chickens[i].setTranslateX(radiuse * Math.cos(teta));
+//            chickens[i].setTranslateY(radiuse * Math.sin(teta));
+//            teta = (teta + angle_velocity) % (2 * Math.PI);
+//        }
+//        radiuse= 220;
+//        for (int i = 25; i <45 ; i++) {
+//            chickens[i] = new Chicken3();
+//            chickens[i].setTranslateX(radiuse * Math.cos(teta));
+//            chickens[i].setTranslateY(radiuse * Math.sin(teta));
+//            teta = (teta + angle_velocity) % (2 * Math.PI);
+//        }
+
+
         return new ArrayList<Chicken>(Arrays.asList(chickens));
     }
 

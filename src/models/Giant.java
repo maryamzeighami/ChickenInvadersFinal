@@ -6,7 +6,7 @@ import java.io.File;
 
 public class Giant extends Chicken {
 
-    int level;
+    int shapelevel;
     static Image[] image= new Image[12];
     static {
         image[0] = new Image(new File(System.getProperty("user.dir") + "/src/pics/giant1.png").toURI().toString());
@@ -26,11 +26,12 @@ public class Giant extends Chicken {
 
 
     }
-    Giant(int level ){
+    public Giant(int level ){
 
         super(image[level-1]);
 
-        this.level= level;
+        this.shapelevel= level;
+        level=5;
 
         setFitWidth(600);
         setFitHeight(600);
@@ -45,8 +46,8 @@ public class Giant extends Chicken {
     @Override
     public void blink() {
 
-        if (getImage().equals(image[level-1])) setImage(image[level]);
-         else if (getImage().equals(image[level])) setImage(image[level+1]);
-         else if (getImage().equals(image[level+1])) setImage(image[level-1]);
+        if (getImage().equals(image[shapelevel-1])) setImage(image[shapelevel]);
+         else if (getImage().equals(image[shapelevel])) setImage(image[shapelevel+1]);
+         else if (getImage().equals(image[shapelevel+1])) setImage(image[shapelevel-1]);
     }
 }

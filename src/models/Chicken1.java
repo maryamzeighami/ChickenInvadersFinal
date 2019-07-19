@@ -13,7 +13,8 @@ public class Chicken1 extends Chicken {
         image[0] = new Image(new File(System.getProperty("user.dir") + "/src/pics/head1.png").toURI().toString());
         image[1] = new Image(new File(System.getProperty("user.dir") + "/src/pics/head1B.png").toURI().toString());
     }
-    Chicken1(){
+
+     public Chicken1(){
 
         super(image[0]);
         health = Constants.CHICKEN_1_HEALTH;

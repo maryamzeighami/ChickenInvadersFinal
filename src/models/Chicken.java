@@ -9,7 +9,7 @@ import java.io.File;
 
 public class Chicken extends ImageView {
 
-    int health;
+    public int health;
     int level;
     static Image[] image = new Image[2];
 
@@ -36,9 +36,6 @@ public class Chicken extends ImageView {
             return false;
     }
 
-    public int getHealth() {
-        return health;
-    }
 
     public int getlevel() {
         return level;

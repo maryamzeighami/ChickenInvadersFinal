@@ -15,7 +15,7 @@ public class Chicken4 extends Chicken {
 
     }
 
-    Chicken4() {
+    public Chicken4() {
         super(image[0]);
         health = 300;
         level = 4;
