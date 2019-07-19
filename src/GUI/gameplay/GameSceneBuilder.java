@@ -395,15 +395,20 @@ public class GameSceneBuilder {
         KeyFrame motion = new KeyFrame(Duration.millis(200), event -> {
             for (int i = 0; i < chickens.size(); i++) {
                 if (chickens.get(i) instanceof Giant) {
-                      chickens.get(i).blink();
+                    chickens.get(i).blink();
                 }
 
             }
         });
 
+        KeyFrame saveKeyFrame = new KeyFrame(Duration.millis(25), event -> {
+            // TODO: 6/29/19 (SAVE_JSON)
+        });
+
+
         //// timeline
         timeline = new Timeline();
-        timeline.getKeyFrames().addAll(mainKeyFrame, killKeyFrame, shootKeyFrame, hitKeyFrame);
+        timeline.getKeyFrames().addAll(mainKeyFrame, killKeyFrame, shootKeyFrame, hitKeyFrame, saveKeyFrame);
         timeline.setCycleCount(Timeline.INDEFINITE);
         timeline.playFromStart();
 
