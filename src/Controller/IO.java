@@ -29,7 +29,8 @@ public class IO {
                 json = json.concat(String.valueOf((char) i));
             System.out.print((char) i);
 
-        } catch (Exception e) {
+        } catch (Exception ignored) {
+            
         }
 
         // game.data (json) to object

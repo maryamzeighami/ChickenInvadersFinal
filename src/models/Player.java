@@ -4,13 +4,18 @@ import java.io.Serializable;
 
 public class Player{
     private Game currentGame = null;
-    private String name;
-    private int score;
-    private int coin;
-    private int numberOfBombs;
+    public String name;
+    public int score;
+    public int coin;
+    public int numberOfBombs;
+    public int heartNum;
+    public SpaceShip spaceShip;
 
     public Player(String name) {
         this.name = name;
+        numberOfBombs=3;
+        heartNum=5;
+
     }
 
     public Game getCurrentGame() {

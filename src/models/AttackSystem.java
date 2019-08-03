@@ -93,4 +93,8 @@ public class AttackSystem {
     public double getTemperature() {
         return tempreture;
     }
+
+    public BeamLevel getLevel(){
+        return beamLevel;
+    }
 }

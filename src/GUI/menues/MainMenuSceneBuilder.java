@@ -2,6 +2,7 @@ package GUI.menues;
 
 import Controller.IO;
 import GUI.MainStageHolder;
+import GUI.gameplay.ExitMenuStage;
 import GUI.gameplay.GameSceneBuilder;
 import GUI.menues.choosePlayerScene.ChoosePlayerSceneBuilder;
 import javafx.geometry.Pos;
@@ -28,6 +29,7 @@ public class MainMenuSceneBuilder {
     private Button exitBut;
     private Button ratBut;
     private Button changbut;
+    private Button multiPlayerBut;
     private Text playerName = new Text();
     Media menueSound = new Media(new File(System.getProperty("user.dir") + "/src/sounds/menueSound.mp3").toURI().toString());
     MediaPlayer menuePlayer = new MediaPlayer(menueSound);
@@ -39,11 +41,13 @@ public class MainMenuSceneBuilder {
 
         //buttons
         resumeBut = new Button("resume");
-        startBut = new Button("start");
+        startBut = new Button("single player");
         settingsBut = new Button("setting");
         exitBut = new Button("exit");
         ratBut = new Button("rating");
         changbut = new Button("change player");
+        multiPlayerBut= new Button(" multiplayer");
+
 
         if (player.getCurrentGame() == null){
             resumeBut.setDisable(true);
@@ -74,10 +78,15 @@ public class MainMenuSceneBuilder {
             MainStageHolder.stage.setScene(scene);
         });
 
+        multiPlayerBut.setOnAction(event -> {
+           MultiPlayerMenu multiPlayerMenu = new MultiPlayerMenu();
+           MainStageHolder.stage.setScene(multiPlayerMenu.build(player).getScene());
+        });
+
         playerName.setText("hello " + player.getName());
         playerName.setStyle("-fx-font-size: 50 ; -fx-fill: White");
         VBox vbox = new VBox(6);
-        vbox.getChildren().addAll(playerName,changbut, resumeBut, startBut, ratBut, settingsBut, exitBut);
+        vbox.getChildren().addAll(playerName,changbut, resumeBut, startBut, multiPlayerBut, ratBut, settingsBut, exitBut);
 
 
         //background
