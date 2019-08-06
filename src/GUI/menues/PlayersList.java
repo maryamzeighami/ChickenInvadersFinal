@@ -1,6 +1,8 @@
 package GUI.menues;
 
 import Controller.CellTower;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -20,22 +22,14 @@ import java.util.ArrayList;
 
 public class PlayersList {
     public static Scene scene;
-    ArrayList<Text> texts= new ArrayList<>();
+    private ArrayList<Text> texts = new ArrayList<>();
+    private VBox box = new VBox();
 
-
-    public PlayersList build(ArrayList<Player> players) {
-
-
-        VBox box = new VBox();
-
-        for (Player player : players) {
-            texts.add(new Text(player.getName()));
-        }
+    public PlayersList build(ArrayList<Player> players, boolean server, CellTower tower) {
 
 
 
-        box.getChildren().addAll(texts);
-
+        setBox(players);
 
         String addr = System.getProperty("user.dir") + "/src/pics/green2.gif";
         File file = new File(addr);
@@ -45,7 +39,13 @@ public class PlayersList {
 
         box.setAlignment(Pos.CENTER);
         pane.getChildren().addAll(box);
-
+        if (server){
+            Button but = new Button("start");
+            but.setStyle("-fx-background-color: #4e804d");
+            but.setOnAction(event -> tower.transmitStart());
+            but.setTranslateY(50);
+            pane.getChildren().add(but);
+        }
         scene = new Scene(pane, 600, 600);
         scene.getStylesheets().add("/GUI/CSS/MainMenuStyle.css");
 
@@ -57,10 +57,12 @@ public class PlayersList {
         return scene;
     }
     public void setBox(ArrayList<Player> players){
-       texts=null;
+        box.getChildren().clear();
+        texts.clear();
         for (Player player : players) {
             texts.add(new Text(player.getName()));
         }
+        box.getChildren().addAll(texts);
 
     }
 

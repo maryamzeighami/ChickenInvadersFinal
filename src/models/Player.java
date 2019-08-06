@@ -14,7 +14,7 @@ public class Player{
     public Player(String name) {
         this.name = name;
         numberOfBombs=3;
-        heartNum=5;
+        heartNum=1000;
 
     }
 

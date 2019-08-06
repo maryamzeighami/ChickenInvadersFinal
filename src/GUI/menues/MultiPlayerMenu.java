@@ -67,7 +67,6 @@ public class MultiPlayerMenu {
             try {
                 Socket socket = new Socket("127.0.0.1" ,421);
                 CellTower cellTower = new CellTower(socket,player);
-                cellTower.transmitMyName(player.getName());
             } catch (IOException e) {
                 e.printStackTrace();
             }
