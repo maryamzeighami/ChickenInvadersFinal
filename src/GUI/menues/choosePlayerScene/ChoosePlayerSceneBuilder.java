@@ -29,11 +29,12 @@ public class ChoosePlayerSceneBuilder {
     private Button enterBut;
     public VBox vbox = new VBox(0.5);
     private TableView<Player> table;
+    public static ArrayList<Player> players= new ArrayList<>();
     public static  boolean reNewTable= false;
 
 
 
-    public ChoosePlayerSceneBuilder build (ArrayList<Player> players) {
+    public ChoosePlayerSceneBuilder build (ArrayList<Player> playerss) {
 
         //buttons
         addPlayerBut = new Button("add player");
@@ -85,6 +86,7 @@ public class ChoosePlayerSceneBuilder {
             Player selectedItem = table.getSelectionModel().getSelectedItem();
             DataBase.getInstance().getPlayers().remove(selectedItem);
             table.getItems().remove(selectedItem);
+
         });
 
 
@@ -95,11 +97,16 @@ public class ChoosePlayerSceneBuilder {
 
         //enter game
         enterBut.setOnAction(event -> {
-            //todo
+
+            setPlayers();
             MainMenuSceneBuilder builder = new MainMenuSceneBuilder();
 //            builder.build(getPlayer(table.getSelectionModel().getSelectedItem()));
             builder.build(table.getSelectionModel().getSelectedItem());
             MainStageHolder.stage.setScene(builder.getScene());
+            for (Player player : players) {
+                System.out.println(player.getName());
+            }
+
         });
 
 
@@ -140,6 +147,13 @@ public class ChoosePlayerSceneBuilder {
 
     }
 
+
+    public  void  setPlayers(){
+        for (Player player : table.getItems()) {
+            players.add(player);
+        }
+    }
+
     //get player
 //    public Player getPlayer(Player player) {
 //        for (int i = 0; i < vbox.getChildren().size(); i++) {
@@ -160,6 +174,8 @@ public class ChoosePlayerSceneBuilder {
         players.addAll(DataBase.getInstance().getPlayers());
         return players;
     }
+
+
 
 
     public Scene getScene() {

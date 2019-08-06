@@ -24,12 +24,12 @@ public class LastSceneBuilder {
     ImageView backGround;
     Text message = new Text();
 
-    Media defetedSound = new Media(new File(System.getProperty("user.dir") + "/src/sounds/losing.mp3").toURI().toString());
+    Media defetedSound = new Media(new File(System.getProperty("user.dir") + "/src/sounds/lossing.mp3").toURI().toString());
     MediaPlayer defetingSoundPlayer = new MediaPlayer(defetedSound);
     Media winningdSound = new Media(new File(System.getProperty("user.dir") + "/src/sounds/menueSound.mp3").toURI().toString());
     MediaPlayer winningSoundPlayer = new MediaPlayer(winningdSound);
 
-    public LastSceneBuilder build(Player player , int Score, boolean flag) {
+    public LastSceneBuilder build(Player player ,  boolean flag) {
 
 
 
@@ -59,13 +59,13 @@ public class LastSceneBuilder {
         }
         if (flag){
             winningSoundPlayer.play();
-            imageView=new ImageView(new Image(new File(System.getProperty("user.dir")
-                    + "/src/pics/winning.png").toURI().toString()));
+//            imageView=new ImageView(new Image(new File(System.getProperty("user.dir")
+//                    + "/src/pics/tenor.gif").toURI().toString()));
 
             message.setText("YOU MADE IT "+ player.getName()+ " !");
 
-            imageView.setFitWidth(600);
-            imageView.setFitHeight(600);
+            imageView.setFitWidth(800);
+            imageView.setFitHeight(800);
 
         }
 
@@ -73,9 +73,12 @@ public class LastSceneBuilder {
 
 
         message.setStyle("-fx-fill: White; -fx-font-size: 40");
-
+       if (flag)
         backGround= new ImageView(new Image(new File(System.getProperty("user.dir")
                 + "/src/pics/back3.png").toURI().toString()));
+       if (!flag)
+           backGround= new ImageView(new Image(new File(System.getProperty("user.dir")
+                   + "/src/pics/tenor.gif").toURI().toString()));
 
             VBox vBox = new VBox();
             vBox.getChildren().addAll(message, goBackButton, imageView);

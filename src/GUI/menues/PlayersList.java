@@ -1,10 +1,7 @@
 package GUI.menues;
 
-import Controller.CellTower;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
@@ -13,14 +10,12 @@ import javafx.scene.text.Text;
 import models.Player;
 
 import java.io.File;
-import java.io.IOException;
-import java.net.ServerSocket;
-import java.net.Socket;
 import java.util.ArrayList;
 
 public class PlayersList {
     public static Scene scene;
-    ArrayList<Text> texts= new ArrayList<>();
+
+    private ArrayList<Text> texts= new ArrayList<>();
 
 
     public PlayersList build(ArrayList<Player> players) {
@@ -57,7 +52,7 @@ public class PlayersList {
         return scene;
     }
     public void setBox(ArrayList<Player> players){
-       texts=null;
+        texts= new ArrayList<>();
         for (Player player : players) {
             texts.add(new Text(player.getName()));
         }
