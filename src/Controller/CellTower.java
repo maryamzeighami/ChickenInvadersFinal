@@ -201,7 +201,7 @@ public class CellTower {
                             // given chicken drops given item
                             String line1 = receiveText(scanner);
                             while (!line1.equals("End of Transmission")) {
-                                synchronized (GameSceneBuilder.lock) {
+                                synchronized (lock2) {
                                     int x = Integer.parseInt(line1.split(" ")[0]);
                                     String stuff = line1.split(" ")[1];
 

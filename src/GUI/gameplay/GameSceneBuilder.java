@@ -95,7 +95,6 @@ public class GameSceneBuilder {
     public GameSceneBuilder builder(Player player) {
 
         currentPlayer= player;
-        players.add(currentPlayer);
         currentGameSceneBuilder= this;
 
         gameSoundPlayer.play();
@@ -216,6 +215,8 @@ public class GameSceneBuilder {
             infoVBox.setAlignment(Pos.BOTTOM_CENTER);
             infoVBox.getChildren().addAll(currentPlayer.spaceShip);
             stackPane.getChildren().add(infoVBox);
+            spaceShips.add(currentPlayer.spaceShip);
+            players.add(currentPlayer);
         }
         scene = new Scene(stackPane, Constants.GAME_SCENE_WIDTH, Constants.GAME_SCENE_HEIGHT);
         if (currentPlayer.getCurrentGame() == null) {
@@ -249,7 +250,8 @@ public class GameSceneBuilder {
                 case B:
 //                    if (numberOfBomb>0) {
                     getBomb(myIndex);
-                    cellTower.transmitBomb(myIndex);
+                    if (isMulti)
+                        cellTower.transmitBomb(myIndex);
                     //todo killing anything and counting the score
 
 
