@@ -42,6 +42,7 @@ public class GameSceneBuilder {
     boolean isServer=false;
     boolean isMulti= false;
     int myIndex;
+    public final static Object lock = new Object();
 
 
     Media bombSound = new Media(new File(System.getProperty("user.dir") + "/src/sounds/bomb.wav").toURI().toString());
@@ -305,10 +306,12 @@ public class GameSceneBuilder {
                 }
             }
 
-            for (ImageView view : stuff) {
-                if (view.getLayoutY() > 900) {
-                    stuff.remove(view);
-                    stackPane.getChildren().remove(view);
+            synchronized (lock) {
+                for (ImageView view : stuff) {
+                    if (view.getLayoutY() > 900) {
+                        stuff.remove(view);
+                        stackPane.getChildren().remove(view);
+                    }
                 }
             }
 
@@ -537,19 +540,21 @@ public class GameSceneBuilder {
 
     }
     public void throwSeedP(int i){
-        Seed seed = new Seed();
+        synchronized (lock) {
+            Seed seed = new Seed();
 
-        seed.setTranslateX(chickens.get(i).getTranslateX());
-        seed.setTranslateY(chickens.get(i).getTranslateY());
+            seed.setTranslateX(chickens.get(i).getTranslateX());
+            seed.setTranslateY(chickens.get(i).getTranslateY());
 
-        stackPane.getChildren().addAll(seed);
-        stuff.add(seed);
+            stackPane.getChildren().addAll(seed);
+            stuff.add(seed);
 
-        TranslateTransition transition = new TranslateTransition();
-        transition.setNode(seed);
-        transition.setDuration(Duration.millis(3000));
-        transition.setToY(Constants.GAME_SCENE_HEIGHT + 200);
-        transition.playFromStart();
+            TranslateTransition transition = new TranslateTransition();
+            transition.setNode(seed);
+            transition.setDuration(Duration.millis(3000));
+            transition.setToY(Constants.GAME_SCENE_HEIGHT + 200);
+            transition.playFromStart();
+        }
 
     }
 
@@ -574,30 +579,32 @@ public class GameSceneBuilder {
 
 
     public void throwPowerUp(int index, int typ){
-        PowerUp powerUp;
-        if (typ==1){
-            powerUp = new PowerUp(1);
-        }else {
-            powerUp= new PowerUp(2);
+        synchronized (lock) {
+            PowerUp powerUp;
+            if (typ == 1) {
+                powerUp = new PowerUp(1);
+            } else {
+                powerUp = new PowerUp(2);
+            }
+
+            powerUp.setTranslateX(chickens.get(index).getTranslateX());
+            powerUp.setTranslateY(chickens.get(index).getTranslateY());
+
+            powerUp.setFitHeight(50);
+            powerUp.setFitWidth(50);
+
+            stackPane.getChildren().addAll(powerUp);
+            stuff.add(powerUp);
+
+
+            TranslateTransition transition = new TranslateTransition();
+            transition.setNode(powerUp);
+            transition.setDuration(Duration.millis(3000));
+
+            transition.setToY(Constants.GAME_SCENE_HEIGHT + 200);
+
+            transition.playFromStart();
         }
-
-        powerUp.setTranslateX(chickens.get(index).getTranslateX());
-        powerUp.setTranslateY(chickens.get(index).getTranslateY());
-
-        powerUp.setFitHeight(50);
-        powerUp.setFitWidth(50);
-
-        stackPane.getChildren().addAll(powerUp);
-        stuff.add(powerUp);
-
-
-        TranslateTransition transition = new TranslateTransition();
-        transition.setNode(powerUp);
-        transition.setDuration(Duration.millis(3000));
-
-        transition.setToY(Constants.GAME_SCENE_HEIGHT + 200);
-
-        transition.playFromStart();
     }
 
     public void thowEgg(int i) {
@@ -630,23 +637,24 @@ public class GameSceneBuilder {
     }
 
     public void throwEggP(int i){
-        Egg egg = new Egg();
+        synchronized (lock) {
+            Egg egg = new Egg();
 
-        egg.setTranslateX(chickens.get(i).getTranslateX());
-        egg.setTranslateY(chickens.get(i).getTranslateY());
+            egg.setTranslateX(chickens.get(i).getTranslateX());
+            egg.setTranslateY(chickens.get(i).getTranslateY());
 
-        stackPane.getChildren().addAll(egg);
-        stuff.add(egg);
+            stackPane.getChildren().addAll(egg);
+            stuff.add(egg);
 
-        TranslateTransition transition = new TranslateTransition();
-        transition.setNode(egg);
-        transition.setDuration(Duration.millis(2000));
+            TranslateTransition transition = new TranslateTransition();
+            transition.setNode(egg);
+            transition.setDuration(Duration.millis(2000));
 
 
-        transition.setToY(Constants.GAME_SCENE_HEIGHT);
+            transition.setToY(Constants.GAME_SCENE_HEIGHT);
 
-        transition.playFromStart();
-
+            transition.playFromStart();
+        }
     }
 
     public void throwGiantEgg(int i) {
@@ -656,43 +664,44 @@ public class GameSceneBuilder {
 
 
     public void catchStuff() {
-        if (stuff != null) {
-            for (int i = 0; i < stuff.size(); i++) {
-                for (Player player : players) {
+        synchronized (lock) {
+            if (stuff != null) {
+                for (int i = 0; i < stuff.size(); i++) {
                     ImageView view = stuff.get(i);
-                    if (isHitToSeed(player.spaceShip, view)) {
-                        if (view instanceof Seed) {
-                            player.coin++;
-                            coinText.setText(Integer.toString(player.coin));
-                        } else if (view instanceof Egg) {
-                            player.heartNum--;
-                            if (player.heartNum == 0) {
-                                MainStageHolder.stage.setScene(MainMenuSceneBuilder.getScene());
-                                gameSoundPlayer.pause();
-                                return;
-                            }
-                            heartText.setText(Integer.toString(player.heartNum));
-                            player.spaceShip.setTranslateX(Constants.GAME_SCENE_WIDTH / 2);
-                            player.spaceShip.setTranslateY(Constants.GAME_SCENE_HEIGHT);
-                        } else if (view instanceof PowerUp) {
-                            if (((PowerUp) view).getType() == 1) {
-                                Constants.TEMPERATURE_LIMIT = Constants.TEMPERATURE_LIMIT + 5;
-                            } else {
+                    for (Player player : players) {
+                        if (isHitToSeed(player.spaceShip, view)) {
+                            if (view instanceof Seed) {
+                                player.coin++;
+                                coinText.setText(Integer.toString(player.coin));
+                            } else if (view instanceof Egg) {
+                                player.heartNum--;
+                                if (player.heartNum == 0) {
+                                    MainStageHolder.stage.setScene(MainMenuSceneBuilder.getScene());
+                                    gameSoundPlayer.pause();
+                                    return;
+                                }
+                                heartText.setText(Integer.toString(player.heartNum));
+                                player.spaceShip.setTranslateX(Constants.GAME_SCENE_WIDTH / 2);
+                                player.spaceShip.setTranslateY(Constants.GAME_SCENE_HEIGHT);
+                            } else if (view instanceof PowerUp) {
+                                if (((PowerUp) view).getType() == 1) {
+                                    Constants.TEMPERATURE_LIMIT = Constants.TEMPERATURE_LIMIT + 5;
+                                } else {
 
-                                if (player.spaceShip.attackSystem.getLevel() == BeamLevel.LEVEL_1)
-                                    player.spaceShip.attackSystem.setLevel(BeamLevel.LEVEL_2);
-                                if (player.spaceShip.attackSystem.getLevel() == BeamLevel.LEVEL_2)
-                                    player.spaceShip.attackSystem.setLevel(BeamLevel.LEVEL_3);
+                                    if (player.spaceShip.attackSystem.getLevel() == BeamLevel.LEVEL_1)
+                                        player.spaceShip.attackSystem.setLevel(BeamLevel.LEVEL_2);
+                                    if (player.spaceShip.attackSystem.getLevel() == BeamLevel.LEVEL_2)
+                                        player.spaceShip.attackSystem.setLevel(BeamLevel.LEVEL_3);
 
+                                }
                             }
+                            stackPane.getChildren().remove(view);
+                            stuff.remove(view);
                         }
-                        stackPane.getChildren().remove(view);
-                        stuff.remove(view);
                     }
                 }
             }
         }
-
     }
 
     private void checkChickens() {

@@ -201,22 +201,24 @@ public class CellTower {
                             // given chicken drops given item
                             String line1 = receiveText(scanner);
                             while (!line1.equals("End of Transmission")) {
-                                int x = Integer.parseInt(line1.split(" ")[0]);
-                                String stuff = line1.split(" ")[1];
+                                synchronized (GameSceneBuilder.lock) {
+                                    int x = Integer.parseInt(line1.split(" ")[0]);
+                                    String stuff = line1.split(" ")[1];
 
-                                if (stuff.equals("egg")) {
-                                    if (GameSceneBuilder.currentGameSceneBuilder.chickens.get(x) instanceof Giant)
-                                        Platform.runLater(() -> GameSceneBuilder.currentGameSceneBuilder.throwGiantEgg(x));
-                                    else {
-                                        Platform.runLater(() -> GameSceneBuilder.currentGameSceneBuilder.throwEggP(x));
-                                    }
-                                } else if (stuff.equals("seed"))
-                                    Platform.runLater(() -> GameSceneBuilder.currentGameSceneBuilder.throwSeedP(x));
-                                else if (stuff.equals("powerUp1"))
-                                    Platform.runLater(() -> GameSceneBuilder.currentGameSceneBuilder.throwPowerUp(x, 1));
-                                else if (stuff.equals("powerUp2"))
-                                    Platform.runLater(() -> GameSceneBuilder.currentGameSceneBuilder.throwPowerUp(x, 2));
-                                line1 = receiveText(scanner);
+                                    if (stuff.equals("egg")) {
+                                        if (GameSceneBuilder.currentGameSceneBuilder.chickens.get(x) instanceof Giant)
+                                            Platform.runLater(() -> GameSceneBuilder.currentGameSceneBuilder.throwGiantEgg(x));
+                                        else {
+                                            Platform.runLater(() -> GameSceneBuilder.currentGameSceneBuilder.throwEggP(x));
+                                        }
+                                    } else if (stuff.equals("seed"))
+                                        Platform.runLater(() -> GameSceneBuilder.currentGameSceneBuilder.throwSeedP(x));
+                                    else if (stuff.equals("powerUp1"))
+                                        Platform.runLater(() -> GameSceneBuilder.currentGameSceneBuilder.throwPowerUp(x, 1));
+                                    else if (stuff.equals("powerUp2"))
+                                        Platform.runLater(() -> GameSceneBuilder.currentGameSceneBuilder.throwPowerUp(x, 2));
+                                    line1 = receiveText(scanner);
+                                }
 
                             }
                             break;
