@@ -91,32 +91,32 @@ public class GameSceneBuilder {
 //    SpaceShip spaceShip;
     public ArrayList<SpaceShip> spaceShips= new ArrayList<>();
 
-    public GameSceneBuilder builder(Player player) {
+    public GameSceneBuilder builder(Player player1) {
 
-        currentPlayer= player;
+        currentPlayer= player1;
         currentGameSceneBuilder= this;
 
         gameSoundPlayer.play();
 
 
-        // resuummmmmm
-        if (currentPlayer.getCurrentGame() != null) {
-            currentPlayer.spaceShip = currentPlayer.getCurrentGame().spaceShip;
-            chickens = new ArrayList<>();
-            for (ChickenSave chicken : currentPlayer.getCurrentGame().chickens) {
-                chickens.add(chicken.toChicken());
-            }
-            level= currentPlayer.getCurrentGame().level;
-            wave= currentPlayer.getCurrentGame().wave;
-            currentPlayer.score=currentPlayer.getCurrentGame().score;
-            currentPlayer.coin=currentPlayer.getCurrentGame().numberOfSeeds;
-            currentPlayer.heartNum=currentPlayer.getCurrentGame().healthNumber;
-            currentPlayer.numberOfBombs=currentPlayer.getCurrentGame().numberOfBombs;
-
-            // TODO: 6/29/19 (SAVE_JSON)
-        }
-
-
+//        // resuummmmmm
+//        if (currentPlayer.getCurrentGame() != null) {
+//            currentPlayer.spaceShip = currentPlayer.getCurrentGame().spaceShip;
+//            chickens = new ArrayList<>();
+//            for (ChickenSave chicken : currentPlayer.getCurrentGame().chickens) {
+//                chickens.add(chicken.toChicken());
+//            }
+//            level= currentPlayer.getCurrentGame().level;
+//            wave= currentPlayer.getCurrentGame().wave;
+//            currentPlayer.score=currentPlayer.getCurrentGame().score;
+//            currentPlayer.coin=currentPlayer.getCurrentGame().numberOfSeeds;
+//            currentPlayer.heartNum=currentPlayer.getCurrentGame().healthNumber;
+//            currentPlayer.numberOfBombs=currentPlayer.getCurrentGame().numberOfBombs;
+//
+//            // TODO: 6/29/19 (SAVE_JSON)
+//        }
+//
+//
 
         // --- set pictures ---
 
@@ -165,10 +165,10 @@ public class GameSceneBuilder {
         HBox megaBox = new HBox();
         megaBox.setSpacing(5);
 
-        coinText.setText(Integer.toString(player.coin));
+        coinText.setText(Integer.toString(currentPlayer.coin));
         megaBox.getChildren().addAll(megaSeed, coinText);
 
-        scoreBox.setText(Integer.toString(player.score));
+        scoreBox.setText(Integer.toString(currentPlayer.score));
         scoreBox.setStyle(" -fx-font-size: 80 ; -fx-fill: White");
         HBox sc = new HBox();
         sc.getChildren().addAll(scoreBox);
@@ -239,17 +239,14 @@ public class GameSceneBuilder {
                     timeline.pause();
                     gameSoundPlayer.pause();
                     gameSoundPlayer.getOnStopped();
-                    save();
+//                    save();
                     ExitMenuStage exitMenuStage = new ExitMenuStage();
                     exitMenuStage.Display();
                     break;
 
                 case B:
-//                    if (numberOfBomb>0) {
+//                    if (currentPlayer.numberOfBombs>0) {
                     getBomb();
-                    //todo killing anything and counting the score
-
-
                     currentPlayer.numberOfBombs--;
                     bombText.setText(Integer.toString(currentPlayer.numberOfBombs));
 //                    }
@@ -513,9 +510,7 @@ public class GameSceneBuilder {
             seedPlayer.pause();
             shootPlayer.pause();
         }
-        else if (currentPlayer.heartNum==0 && isMulti){
-            MainStageHolder.stage.setScene(new RankingSceneBuilder().build(currentPlayer,currentPlayer.score).getScene());
-        }
+
 
     }
 
@@ -692,7 +687,7 @@ public class GameSceneBuilder {
         if (chickens.size() == 0) {
             System.out.println("wave=" + wave);
             wave++;
-            if (wave == 5) {
+            if (wave == 6) {
                 wave = 1;
                 level++;
                 currentPlayer.numberOfBombs++;
@@ -709,13 +704,11 @@ public class GameSceneBuilder {
     }
 
     private void win() {
-        MainStageHolder.stage.setScene(new LastSceneBuilder().build(currentPlayer, currentPlayer.score, true).getScene());
+        MainStageHolder.stage.setScene(new LastSceneBuilder().build(currentPlayer, true).getScene());
         gameSoundPlayer.pause();
         seedPlayer.pause();
         shootPlayer.pause();
         bombPlayer.pause();
-        //todo save
-        //save();
     }
 
     private void getNextWave(int wave, int level) {
@@ -729,6 +722,9 @@ public class GameSceneBuilder {
             getCircle(45, level);
         }
         if (wave == 4) {
+            getRandom(10,level);
+        }
+        if (level==5){
             getGiant(level);
         }
     }
@@ -909,6 +905,8 @@ public class GameSceneBuilder {
             case 3:
                 circleMove();
                 break;
+            case 4:
+                randomMove();
         }
     }
 
@@ -988,26 +986,26 @@ public class GameSceneBuilder {
 
     }
 
-    void save() {
-        Game game = new Game();
-
-        game.spaceShip = currentPlayer.spaceShip;
-        game.score= currentPlayer.score;
-        game.level= this.level;
-        game.wave= this.wave;
-        game.numberOfBombs= currentPlayer.numberOfBombs;
-        game.numberOfSeeds=currentPlayer.coin;
-        game.healthNumber= currentPlayer.heartNum;
-
-        for (Chicken chicken : chickens) {
-            ChickenSave newChicken= new ChickenSave(chicken);
-            game.chickens.add(newChicken);
-        }
-
-        // TODO: 6/29/19 save scores and .... (SAVE_JSON)
-
-        currentPlayer.setCurrentGame(game);
-    }
+//    void save() {
+//        Game game = new Game();
+//
+//        game.spaceShip = currentPlayer.spaceShip;
+//        game.score= currentPlayer.score;
+//        game.level= this.level;
+//        game.wave= this.wave;
+//        game.numberOfBombs= currentPlayer.numberOfBombs;
+//        game.numberOfSeeds=currentPlayer.coin;
+//        game.healthNumber= currentPlayer.heartNum;
+//
+//        for (Chicken chicken : chickens) {
+//            ChickenSave newChicken= new ChickenSave(chicken);
+//            game.chickens.add(newChicken);
+//        }
+//
+//        // TODO: 6/29/19 save scores and .... (SAVE_JSON)
+//
+//        currentPlayer.setCurrentGame(game);
+//    }
 
 
     public void killChicken(int i) {

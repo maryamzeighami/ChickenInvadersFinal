@@ -15,9 +15,6 @@ import javafx.scene.text.Text;
 import models.Player;
 
 import java.io.File;
-import java.io.IOException;
-import java.net.ServerSocket;
-import java.net.Socket;
 import java.util.ArrayList;
 
 public class PlayersList {

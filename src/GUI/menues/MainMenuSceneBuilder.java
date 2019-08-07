@@ -1,6 +1,6 @@
 package GUI.menues;
 
-import Controller.IO;
+
 import GUI.MainStageHolder;
 import GUI.gameplay.ExitMenuStage;
 import GUI.gameplay.GameSceneBuilder;
@@ -19,6 +19,7 @@ import models.DataBase;
 import models.Player;
 
 import java.io.File;
+import java.util.ArrayList;
 
 
 public class MainMenuSceneBuilder {
@@ -31,9 +32,18 @@ public class MainMenuSceneBuilder {
     private Button changbut;
     private Button multiPlayerBut;
     private Text playerName = new Text();
+//    private ArrayList<Player> players;
     Media menueSound = new Media(new File(System.getProperty("user.dir") + "/src/sounds/menueSound.mp3").toURI().toString());
     MediaPlayer menuePlayer = new MediaPlayer(menueSound);
+//
+//    public MainMenuSceneBuilder(ArrayList<Player> players) {
+//        this.players=players;
+//
+//    }
 
+    public MainMenuSceneBuilder() {
+
+    }
 
     public MainMenuSceneBuilder build(Player player) {
 
@@ -42,7 +52,7 @@ public class MainMenuSceneBuilder {
         //buttons
         resumeBut = new Button("resume");
         startBut = new Button("single player");
-        settingsBut = new Button("setting");
+//        settingsBut = new Button("setting");
         exitBut = new Button("exit");
         ratBut = new Button("rating");
         changbut = new Button("change player");
@@ -61,7 +71,7 @@ public class MainMenuSceneBuilder {
 
         // exit button
         exitBut.setOnAction(event -> {
-            IO.saveGame();
+//            IO.saveGame();
             System.exit(0);
         });
 
@@ -83,10 +93,16 @@ public class MainMenuSceneBuilder {
            MainStageHolder.stage.setScene(multiPlayerMenu.build(player).getScene());
         });
 
+        ratBut.setOnAction(event -> {
+            Scene scene = new RankingSceneBuilder().build(ChoosePlayerSceneBuilder.players).getScene();
+            MainStageHolder.stage.setScene(scene);
+
+        });
+
         playerName.setText("hello " + player.getName());
         playerName.setStyle("-fx-font-size: 50 ; -fx-fill: White");
         VBox vbox = new VBox(6);
-        vbox.getChildren().addAll(playerName,changbut, resumeBut, startBut, multiPlayerBut, ratBut, settingsBut, exitBut);
+        vbox.getChildren().addAll(playerName,changbut, resumeBut, startBut, multiPlayerBut, ratBut, exitBut);
 
 
         //background
@@ -106,6 +122,7 @@ public class MainMenuSceneBuilder {
 
 
     }
+
 
 
     public static Scene getScene() {

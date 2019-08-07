@@ -1,6 +1,6 @@
 package GUI;
 
-import Controller.IO;
+//import Controller.IO;
 import GUI.menues.choosePlayerScene.ChoosePlayerSceneBuilder;
 import javafx.application.Application;
 import javafx.scene.Scene;
