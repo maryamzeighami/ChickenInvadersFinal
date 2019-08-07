@@ -1,6 +1,7 @@
 package GUI.menues;
 
 
+import Controller.Save;
 import GUI.MainStageHolder;
 import GUI.gameplay.ExitMenuStage;
 import GUI.gameplay.GameSceneBuilder;
@@ -19,6 +20,7 @@ import models.DataBase;
 import models.Player;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
 
@@ -71,7 +73,12 @@ public class MainMenuSceneBuilder {
 
         // exit button
         exitBut.setOnAction(event -> {
-//            IO.saveGame();
+            Save save = new Save();
+            try {
+                save.save();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
             System.exit(0);
         });
 

@@ -103,18 +103,13 @@ public class GameSceneBuilder {
         // resuummmmmm
         if (currentPlayer.getCurrentGame() != null) {
             currentPlayer.spaceShip = currentPlayer.getCurrentGame().spaceShip;
-            chickens = new ArrayList<>();
-            for (ChickenSave chicken : currentPlayer.getCurrentGame().chickens) {
-                chickens.add(chicken.toChicken());
-            }
+            chickens = currentPlayer.getCurrentGame().chickens;
             level= currentPlayer.getCurrentGame().level;
             wave= currentPlayer.getCurrentGame().wave;
             currentPlayer.score=currentPlayer.getCurrentGame().score;
             currentPlayer.coin=currentPlayer.getCurrentGame().numberOfSeeds;
             currentPlayer.heartNum=currentPlayer.getCurrentGame().healthNumber;
             currentPlayer.numberOfBombs=currentPlayer.getCurrentGame().numberOfBombs;
-
-            // TODO: 6/29/19 (SAVE_JSON)
         }
 
 
@@ -242,7 +237,10 @@ public class GameSceneBuilder {
                     timeline.pause();
                     gameSoundPlayer.pause();
                     gameSoundPlayer.getOnStopped();
-                    //save();
+                    Game currentGame = new Game(currentPlayer.score,currentPlayer.heartNum,currentPlayer.numberOfBombs,currentPlayer.coin,level,wave);
+                    currentGame.chickens = chickens;
+                    currentGame.spaceShip = currentPlayer.spaceShip;
+                    currentPlayer.setCurrentGame(currentGame);
                     ExitMenuStage exitMenuStage = new ExitMenuStage();
                     exitMenuStage.Display();
                     break;

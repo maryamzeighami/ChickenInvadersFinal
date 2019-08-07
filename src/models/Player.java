@@ -1,7 +1,5 @@
 package models;
 
-import java.io.Serializable;
-
 public class Player{
     private Game currentGame = null;
     public String name;
@@ -15,7 +13,6 @@ public class Player{
         this.name = name;
         numberOfBombs=3;
         heartNum=1000;
-
     }
 
     public Game getCurrentGame() {
@@ -24,6 +21,11 @@ public class Player{
 
     public void setCurrentGame(Game currentGame) {
         this.currentGame = currentGame;
+        this.coin = currentGame.numberOfSeeds;
+        this.numberOfBombs = currentGame.numberOfBombs;
+        this.heartNum = currentGame.healthNumber;
+        this.score = currentGame.score;
+        this.spaceShip = currentGame.spaceShip;
     }
 
     public String getName() {

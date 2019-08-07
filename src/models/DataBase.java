@@ -1,9 +1,8 @@
 package models;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 
-public class DataBase implements Serializable {
+public class DataBase {
     public static DataBase instance = null;
     private ArrayList<Player> players = new ArrayList<>();
 
@@ -14,8 +13,9 @@ public class DataBase implements Serializable {
         } else return instance;
     }
 
-    public static void setInstance(DataBase dataBase) {
-        instance = dataBase;
+    public static void setInstance(ArrayList<Player> players) {
+        instance = new DataBase();
+        instance.players = players;
     }
 
 

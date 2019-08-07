@@ -7,7 +7,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 
 public class AttackSystem {
-    private int spacShipTempreture;
 
     private BeamType beamType;
     private BeamLevel beamLevel;

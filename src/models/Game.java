@@ -8,7 +8,7 @@ import java.util.ArrayList;
 public class Game {
 
     public SpaceShip spaceShip;
-    public ArrayList<ChickenSave> chickens = new ArrayList<>();
+    public ArrayList<Chicken> chickens = new ArrayList<>();
     public  int score;
     public int healthNumber;
     public int numberOfBombs;
@@ -23,4 +23,12 @@ public class Game {
     public Game() {
     }
 
+    public Game(int score, int healthNumber, int numberOfBombs, int numberOfSeeds, int level, int wave) {
+        this.score = score;
+        this.healthNumber = healthNumber;
+        this.numberOfBombs = numberOfBombs;
+        this.numberOfSeeds = numberOfSeeds;
+        this.level = level;
+        this.wave = wave;
+    }
 }
