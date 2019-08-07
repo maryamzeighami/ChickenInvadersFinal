@@ -1,6 +1,5 @@
 package GUI.gameplay;
 
-import Controller.IO;
 import GUI.MainStageHolder;
 import GUI.menues.MainMenuSceneBuilder;
 import javafx.geometry.Pos;

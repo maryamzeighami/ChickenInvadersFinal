@@ -23,16 +23,17 @@ public class CellTower {
     private ArrayList<Scanner> scanners = new ArrayList<>();
     private ArrayList<PrintWriter> printWriters = new ArrayList<>();
     private final Object lock = new Object();
+    private final Object lock2 = new Object();
     private Player player;
     int myIndex;
     private ArrayList<Player> players = new ArrayList<>();
-    public GUI.menues.PlayersList  playersList;
+    public GUI.menues.PlayersList playersList;
 
     public CellTower(Socket socket, Player player) throws IOException {
         this.player = player;
         addSocket(socket);
         transmitMyName(player.getName());
-        playersList = new GUI.menues.PlayersList().build(players,false,this);
+        playersList = new GUI.menues.PlayersList().build(players, false, this);
         MainStageHolder.stage.setScene(playersList.getScene());
     }
 
@@ -40,7 +41,7 @@ public class CellTower {
         this.serverSocket = serverSocket;
         this.player = player;
         players.add(player);
-        playersList= new GUI.menues.PlayersList().build(players,true,this);
+        playersList = new GUI.menues.PlayersList().build(players, true, this);
         MainStageHolder.stage.setScene(playersList.getScene());
     }
 
@@ -62,7 +63,7 @@ public class CellTower {
                                 String name = line5;
                                 Player player = new Player(name);
                                 players.add(player);
-                                Platform.runLater(()->playersList.setBox(players));
+                                Platform.runLater(() -> playersList.setBox(players));
                                 //send everyone???
                                 transmitPlayerNames();
                                 line5 = receiveText(scanner);
@@ -97,7 +98,7 @@ public class CellTower {
                                 Player player1 = new Player(strings.get(strings.size() - 1));
                                 players.add(player1);
                             }
-                            Platform.runLater(()->playersList.setBox(players));
+                            Platform.runLater(() -> playersList.setBox(players));
                             break;
                         case "Shoot:":
                             //server va client mifresan
@@ -106,11 +107,11 @@ public class CellTower {
                             String line4 = receiveText(scanner);
                             while (!line4.equals("End of Transmission")) {
                                 int i = Integer.parseInt(line4);
-                                transmitShoot(i,printWriters.get(scanners.indexOf(scanner)));
+                                transmitShoot(i, printWriters.get(scanners.indexOf(scanner)));
                                 Beam[] temp = players.get(i).spaceShip.attackSystem.getBeams(players.get(i).spaceShip);
                                 if (temp != null) {
                                     players.get(i).spaceShip.attackSystem.increaseTemp();
-                                    Platform.runLater(()->{
+                                    Platform.runLater(() -> {
                                         GameSceneBuilder.currentGameSceneBuilder.beams.addAll(Arrays.asList(temp));
                                         GameSceneBuilder.currentGameSceneBuilder.stackPane.getChildren().addAll(temp);
                                     });
@@ -119,11 +120,21 @@ public class CellTower {
                                 line4 = receiveText(scanner);
                             }
                             break;
+                        case "Bomb:":
+                            String line6 = receiveText(scanner);
+                            while (!line6.equals("End of Transmission")) {
+                                System.out.println("bomb");
+                                int i = Integer.parseInt(line6);
+                                transmitBomb(i, printWriters.get(scanners.indexOf(scanner)));
+                                Platform.runLater(()->GameSceneBuilder.currentGameSceneBuilder.getBomb(i));
+                                line6 = receiveText(scanner);
+                            }
+                            break;
                         case "Start":
                             //server mifrese
                             //start game
                             GameSceneBuilder gameSceneBuilder = new GameSceneBuilder();
-                            gameSceneBuilder.builder(players, myIndex,this);
+                            gameSceneBuilder.builder(players, myIndex, this);
                             Platform.runLater(() -> MainStageHolder.stage.setScene(gameSceneBuilder.getScene()));
                             break;
                         case "Spaceship Positions:":
@@ -136,38 +147,51 @@ public class CellTower {
                                 double x = Double.parseDouble(line3.split(" ")[1]);
                                 double y = Double.parseDouble(line3.split(" ")[2]);
                                 if (i != myIndex)
-                                    Platform.runLater(()-> {
+                                    Platform.runLater(() -> {
                                         GameSceneBuilder.currentGameSceneBuilder.spaceShips.get(i).setTranslateY(y);
                                         GameSceneBuilder.currentGameSceneBuilder.spaceShips.get(i).setTranslateX(x);
                                     });
                                 line3 = receiveText(scanner);
                             }
                             break;
-                        case "Chicken Dead:":
-                            int i = Integer.parseInt(receiveText(scanner));
-                            Platform.runLater(() -> GameSceneBuilder.currentGameSceneBuilder.killChicken(i));
-                            transmitChickenDead(i,printWriters.get(scanners.indexOf(scanner)));
-                            System.out.println("chicken dead " + Integer.toString(i));
-                            break;
                         case "Chicken Positions:":
                             // server mifrese
                             // read all the given positions and set them
                             String line2 = receiveText(scanner);
                             while (!line2.equals("End of Transmission")) {
-                                ArrayList<Chicken> chickensCopy = GameSceneBuilder.currentGameSceneBuilder.chickens;
-                                GameSceneBuilder.currentGameSceneBuilder.chickens = new ArrayList<>();
-                                for (String position: line2.split(";")) {
-                                    int i2 = Integer.parseInt(position.split(" ")[0]);
+                                ArrayList<Chicken> chickens = new ArrayList<>();
+                                for (String position : line2.split(";")) {
+                                    int level = Integer.parseInt(position.split(" ")[0]);
                                     double x = Double.parseDouble(position.split(" ")[1]);
                                     double y = Double.parseDouble(position.split(" ")[2]);
-                                    Chicken chicken = new Chicken1();
+                                    Chicken chicken;
+                                    switch (level) {
+                                        case 1:
+                                            chicken = new Chicken1();
+                                            break;
+                                        case 2:
+                                            chicken = new Chicken2();
+                                            break;
+                                        case 3:
+                                            chicken = new Chicken3();
+                                            break;
+                                        case 4:
+                                            chicken = new Chicken4();
+                                            break;
+                                        default:
+                                            chicken = new Giant(1);
+                                    }
                                     chicken.setTranslateX(x);
                                     chicken.setTranslateY(y);
-                                    GameSceneBuilder.currentGameSceneBuilder.chickens.add(chicken);
+                                    chickens.add(chicken);
                                 }
-                                Platform.runLater(()->{
-                                    GameSceneBuilder.currentGameSceneBuilder.stackPane.getChildren().removeAll(chickensCopy);
-                                    GameSceneBuilder.currentGameSceneBuilder.stackPane.getChildren().addAll(GameSceneBuilder.currentGameSceneBuilder.chickens);
+                                Platform.runLater(() -> {
+                                    //GameSceneBuilder.currentGameSceneBuilder.stackPane.getChildren().removeAll(chickens);
+                                    synchronized (lock2) {
+                                        GameSceneBuilder.currentGameSceneBuilder.stackPane.getChildren().removeAll(GameSceneBuilder.currentGameSceneBuilder.chickens);
+                                        GameSceneBuilder.currentGameSceneBuilder.chickens = chickens;
+                                        GameSceneBuilder.currentGameSceneBuilder.stackPane.getChildren().addAll(GameSceneBuilder.currentGameSceneBuilder.chickens);
+                                    }
                                 });
                                 line2 = receiveText(scanner);
                             }
@@ -182,16 +206,16 @@ public class CellTower {
 
                                 if (stuff.equals("egg")) {
                                     if (GameSceneBuilder.currentGameSceneBuilder.chickens.get(x) instanceof Giant)
-                                        Platform.runLater(()->GameSceneBuilder.currentGameSceneBuilder.throwGiantEgg(x));
+                                        Platform.runLater(() -> GameSceneBuilder.currentGameSceneBuilder.throwGiantEgg(x));
                                     else {
-                                        Platform.runLater(()->GameSceneBuilder.currentGameSceneBuilder.throwEggP(x));
+                                        Platform.runLater(() -> GameSceneBuilder.currentGameSceneBuilder.throwEggP(x));
                                     }
                                 } else if (stuff.equals("seed"))
-                                    Platform.runLater(()->GameSceneBuilder.currentGameSceneBuilder.throwSeedP(x));
+                                    Platform.runLater(() -> GameSceneBuilder.currentGameSceneBuilder.throwSeedP(x));
                                 else if (stuff.equals("powerUp1"))
-                                    Platform.runLater(()->GameSceneBuilder.currentGameSceneBuilder.throwPowerUp(x,1));
+                                    Platform.runLater(() -> GameSceneBuilder.currentGameSceneBuilder.throwPowerUp(x, 1));
                                 else if (stuff.equals("powerUp2"))
-                                    Platform.runLater(()->GameSceneBuilder.currentGameSceneBuilder.throwPowerUp(x,2));
+                                    Platform.runLater(() -> GameSceneBuilder.currentGameSceneBuilder.throwPowerUp(x, 2));
                                 line1 = receiveText(scanner);
 
                             }
@@ -252,7 +276,7 @@ public class CellTower {
         }
     }
 
-   public void transmitChickenDrops(int i, String stuff) {
+    public void transmitChickenDrops(int i, String stuff) {
         synchronized (lock) {
             transmitText("Chicken Drops:");
             transmitText(Integer.toString(i) + " " + stuff);
@@ -265,18 +289,19 @@ public class CellTower {
             transmitText("Chicken Positions:");
             StringBuilder positions = new StringBuilder();
             for (int i = 0; i < chickens.size(); i++) {
+                int level = chickens.get(i).getlevel();
                 double x = chickens.get(i).getTranslateX();
                 double y = chickens.get(i).getTranslateY();
                 if (!positions.toString().equals(""))
                     positions.append(";");
-                positions.append(Integer.toString(i)).append(" ").append(Double.toString(x)).append(" ").append(Double.toString(y));
+                positions.append(Integer.toString(level)).append(" ").append(Double.toString(x)).append(" ").append(Double.toString(y));
             }
             transmitText(positions.toString());
             transmitText("End of Transmission");
         }
     }
 
-   public void transmitSpaceShipPositions(ArrayList<SpaceShip> spaceShips) {
+    public void transmitSpaceShipPositions(ArrayList<SpaceShip> spaceShips) {
         synchronized (lock) {
             transmitText("Spaceship Positions:");
             for (int i = 0; i < spaceShips.size(); i++) {
@@ -288,7 +313,7 @@ public class CellTower {
         }
     }
 
-    public void transmitMyPosition(ArrayList<SpaceShip> spaceShips){
+    public void transmitMyPosition(ArrayList<SpaceShip> spaceShips) {
         synchronized (lock) {
             transmitText("My Position:");
             double x = spaceShips.get(myIndex).getTranslateX();
@@ -303,12 +328,12 @@ public class CellTower {
             transmitText("Start");
             transmitText("End of Transmission");
             GameSceneBuilder gameSceneBuilder = new GameSceneBuilder();
-            gameSceneBuilder.builder(players, myIndex,this);
+            gameSceneBuilder.builder(players, myIndex, this);
             MainStageHolder.stage.setScene(gameSceneBuilder.getScene());
         }
     }
 
-   public void transmitShoot(int i) {
+    public void transmitShoot(int i) {
         synchronized (lock) {
             transmitText("Shoot:");
             transmitText(Integer.toString(i));
@@ -318,9 +343,25 @@ public class CellTower {
 
     private void transmitShoot(int i, PrintWriter exception) {
         synchronized (lock) {
-            transmitText("Shoot:",exception);
-            transmitText(Integer.toString(i),exception);
-            transmitText("End of Transmission",exception);
+            transmitText("Shoot:", exception);
+            transmitText(Integer.toString(i), exception);
+            transmitText("End of Transmission", exception);
+        }
+    }
+
+    public void transmitBomb(int i) {
+        synchronized (lock) {
+            transmitText("Bomb:");
+            transmitText(Integer.toString(i));
+            transmitText("End of Transmission");
+        }
+    }
+
+    private void transmitBomb(int i, PrintWriter exception) {
+        synchronized (lock) {
+            transmitText("Bomb:", exception);
+            transmitText(Integer.toString(i), exception);
+            transmitText("End of Transmission", exception);
         }
     }
 
@@ -340,22 +381,6 @@ public class CellTower {
                 transmitText(player.getName());
             }
             transmitText("End of Transmission");
-        }
-    }
-
-    public void transmitChickenDead(int i) {
-        synchronized (lock) {
-            transmitText("Chicken Dead:");
-            transmitText(Integer.toString(i));
-            transmitText("End of Transmission");
-        }
-    }
-
-    public void transmitChickenDead(int i, PrintWriter exception) {
-        synchronized (lock) {
-            transmitText("Chicken Dead:",exception);
-            transmitText(Integer.toString(i),exception);
-            transmitText("End of Transmission",exception);
         }
     }
 

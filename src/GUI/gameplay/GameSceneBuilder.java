@@ -79,7 +79,6 @@ public class GameSceneBuilder {
 
 
     // AttackSystem
-    AttackSystem attackSystem = new AttackSystem();
 
     EnemySystem enemySystem = new EnemySystem();
    public ArrayList<Chicken> chickens;
@@ -90,33 +89,35 @@ public class GameSceneBuilder {
 
 //    SpaceShip spaceShip;
     public ArrayList<SpaceShip> spaceShips= new ArrayList<>();
+    public ArrayList<Player> players = new ArrayList<>();
 
-    public GameSceneBuilder builder(Player player1) {
+    public GameSceneBuilder builder(Player player) {
 
-        currentPlayer= player1;
+        currentPlayer= player;
+        players.add(currentPlayer);
         currentGameSceneBuilder= this;
 
         gameSoundPlayer.play();
 
 
-//        // resuummmmmm
-//        if (currentPlayer.getCurrentGame() != null) {
-//            currentPlayer.spaceShip = currentPlayer.getCurrentGame().spaceShip;
-//            chickens = new ArrayList<>();
-//            for (ChickenSave chicken : currentPlayer.getCurrentGame().chickens) {
-//                chickens.add(chicken.toChicken());
-//            }
-//            level= currentPlayer.getCurrentGame().level;
-//            wave= currentPlayer.getCurrentGame().wave;
-//            currentPlayer.score=currentPlayer.getCurrentGame().score;
-//            currentPlayer.coin=currentPlayer.getCurrentGame().numberOfSeeds;
-//            currentPlayer.heartNum=currentPlayer.getCurrentGame().healthNumber;
-//            currentPlayer.numberOfBombs=currentPlayer.getCurrentGame().numberOfBombs;
-//
-//            // TODO: 6/29/19 (SAVE_JSON)
-//        }
-//
-//
+        // resuummmmmm
+        if (currentPlayer.getCurrentGame() != null) {
+            currentPlayer.spaceShip = currentPlayer.getCurrentGame().spaceShip;
+            chickens = new ArrayList<>();
+            for (ChickenSave chicken : currentPlayer.getCurrentGame().chickens) {
+                chickens.add(chicken.toChicken());
+            }
+            level= currentPlayer.getCurrentGame().level;
+            wave= currentPlayer.getCurrentGame().wave;
+            currentPlayer.score=currentPlayer.getCurrentGame().score;
+            currentPlayer.coin=currentPlayer.getCurrentGame().numberOfSeeds;
+            currentPlayer.heartNum=currentPlayer.getCurrentGame().healthNumber;
+            currentPlayer.numberOfBombs=currentPlayer.getCurrentGame().numberOfBombs;
+
+            // TODO: 6/29/19 (SAVE_JSON)
+        }
+
+
 
         // --- set pictures ---
 
@@ -165,10 +166,10 @@ public class GameSceneBuilder {
         HBox megaBox = new HBox();
         megaBox.setSpacing(5);
 
-        coinText.setText(Integer.toString(currentPlayer.coin));
+        coinText.setText(Integer.toString(player.coin));
         megaBox.getChildren().addAll(megaSeed, coinText);
 
-        scoreBox.setText(Integer.toString(currentPlayer.score));
+        scoreBox.setText(Integer.toString(player.score));
         scoreBox.setStyle(" -fx-font-size: 80 ; -fx-fill: White");
         HBox sc = new HBox();
         sc.getChildren().addAll(scoreBox);
@@ -239,14 +240,18 @@ public class GameSceneBuilder {
                     timeline.pause();
                     gameSoundPlayer.pause();
                     gameSoundPlayer.getOnStopped();
-//                    save();
+                    //save();
                     ExitMenuStage exitMenuStage = new ExitMenuStage();
                     exitMenuStage.Display();
                     break;
 
                 case B:
-//                    if (currentPlayer.numberOfBombs>0) {
-                    getBomb();
+//                    if (numberOfBomb>0) {
+                    getBomb(myIndex);
+                    cellTower.transmitBomb(myIndex);
+                    //todo killing anything and counting the score
+
+
                     currentPlayer.numberOfBombs--;
                     bombText.setText(Integer.toString(currentPlayer.numberOfBombs));
 //                    }
@@ -266,18 +271,19 @@ public class GameSceneBuilder {
         // keyboard handler - action (does something if key is pressed!) - timeLines and keyFrames
         //// keyFrames
         KeyFrame shootKeyFrame = new KeyFrame(Duration.millis(25), event -> {
-            heatBar.setProgress(attackSystem.getTemperature() / Constants.TEMPERATURE_LIMIT);
-            if (attackSystem.getTemperature() > Constants.TEMPERATURE_LIMIT)
+            heatBar.setProgress(currentPlayer.spaceShip.attackSystem.getTemperature() / Constants.TEMPERATURE_LIMIT);
+            if (currentPlayer.spaceShip.attackSystem.getTemperature() > Constants.TEMPERATURE_LIMIT)
                 heatBar.setStyle("-fx-background-color: red");
             else
                 heatBar.setStyle(" -fx-accent: #ffc12b");
 
             // space key for shooting beams! and handling temperature and hits!
-            attackSystem.decreaseTemp();
+            for (SpaceShip spaceShip: spaceShips)
+                spaceShip.attackSystem.decreaseTemp();
             if (spaceKey == KeyState.PRESSED) {
-                Beam[] temp = attackSystem.getBeams(currentPlayer.spaceShip);
+                Beam[] temp = currentPlayer.spaceShip.attackSystem.getBeams(currentPlayer.spaceShip);
                 if (temp != null) {
-                    attackSystem.increaseTemp();
+                    currentPlayer.spaceShip.attackSystem.increaseTemp();
                     beams.addAll(Arrays.asList(temp));
                     stackPane.getChildren().addAll(temp);
                     if (isMulti) cellTower.transmitShoot(myIndex);
@@ -351,12 +357,12 @@ public class GameSceneBuilder {
 
         });
 
-        KeyFrame serverTransmitFrame = new KeyFrame(Duration.millis(50), event -> {
+        KeyFrame serverTransmitFrame = new KeyFrame(Duration.millis(100), event -> {
             cellTower.transmitChickenPositions(chickens);
             cellTower.transmitSpaceShipPositions(spaceShips);
         });
 
-        KeyFrame clientTransmitFrame = new KeyFrame(Duration.millis(50), event -> {
+        KeyFrame clientTransmitFrame = new KeyFrame(Duration.millis(100), event -> {
             cellTower.transmitMyPosition(spaceShips);
         });
 
@@ -501,16 +507,19 @@ public class GameSceneBuilder {
             stackPane.getChildren().add(infoVBox);
             spaceShips.add(players.get(j).spaceShip);
         }
+        this.players = players;
     }
 
     private void defeat() {
         if (currentPlayer.heartNum == 0 && !isMulti) {
-            MainStageHolder.stage.setScene(new LastSceneBuilder().build(currentPlayer, currentPlayer.score, false).getScene());
+            MainStageHolder.stage.setScene(new LastSceneBuilder().build(currentPlayer, false).getScene());
             gameSoundPlayer.pause();
             seedPlayer.pause();
             shootPlayer.pause();
         }
-
+        else if (currentPlayer.heartNum==0 && isMulti){
+            MainStageHolder.stage.setScene(new RankingSceneBuilder().build(players).getScene());
+        }
 
     }
 
@@ -550,12 +559,12 @@ public class GameSceneBuilder {
             if (random.nextInt(2) == 1) {
                 throwPowerUp(i,1);
                 if (isServer)
-                cellTower.transmitChickenDrops(i , "Power Up1");
+                cellTower.transmitChickenDrops(i , "powerUp1");
 
             } else {
                 throwPowerUp(i,2);
                 if (isServer)
-                cellTower.transmitChickenDrops(i , "Power Up2");
+                cellTower.transmitChickenDrops(i , "powerUp2");
             }
 
         }
@@ -612,7 +621,7 @@ public class GameSceneBuilder {
 
         }
         if (flag) {
-            if (isServer) cellTower.transmitChickenDrops(i, "Egg");
+            if (isServer) cellTower.transmitChickenDrops(i, "egg");
             throwEggP(i);
 
         }
@@ -649,34 +658,37 @@ public class GameSceneBuilder {
     public void catchStuff() {
         if (stuff != null) {
             for (int i = 0; i < stuff.size(); i++) {
-                ImageView view = stuff.get(i);
+                for (Player player : players) {
+                    ImageView view = stuff.get(i);
+                    if (isHitToSeed(player.spaceShip, view)) {
+                        if (view instanceof Seed) {
+                            player.coin++;
+                            coinText.setText(Integer.toString(player.coin));
+                        } else if (view instanceof Egg) {
+                            player.heartNum--;
+                            if (player.heartNum == 0) {
+                                MainStageHolder.stage.setScene(MainMenuSceneBuilder.getScene());
+                                gameSoundPlayer.pause();
+                                return;
+                            }
+                            heartText.setText(Integer.toString(player.heartNum));
+                            player.spaceShip.setTranslateX(Constants.GAME_SCENE_WIDTH / 2);
+                            player.spaceShip.setTranslateY(Constants.GAME_SCENE_HEIGHT);
+                        } else if (view instanceof PowerUp) {
+                            if (((PowerUp) view).getType() == 1) {
+                                Constants.TEMPERATURE_LIMIT = Constants.TEMPERATURE_LIMIT + 5;
+                            } else {
 
-                if (isHitToSeed(currentPlayer.spaceShip, view)) {
-                    if (view instanceof Seed) {
-                        currentPlayer.coin++;
-                        coinText.setText(Integer.toString(currentPlayer.coin));
-                    } else if (view instanceof Egg) {
-                        currentPlayer.heartNum--;
-                        if (currentPlayer.heartNum == 0) {
-                            MainStageHolder.stage.setScene(MainMenuSceneBuilder.getScene());
-                            gameSoundPlayer.pause();
-                            return;
+                                if (player.spaceShip.attackSystem.getLevel() == BeamLevel.LEVEL_1)
+                                    player.spaceShip.attackSystem.setLevel(BeamLevel.LEVEL_2);
+                                if (player.spaceShip.attackSystem.getLevel() == BeamLevel.LEVEL_2)
+                                    player.spaceShip.attackSystem.setLevel(BeamLevel.LEVEL_3);
+
+                            }
                         }
-                        heartText.setText(Integer.toString(currentPlayer.heartNum));
-                        currentPlayer.spaceShip.setTranslateX(Constants.GAME_SCENE_WIDTH / 2);
-                        currentPlayer.spaceShip.setTranslateY(Constants.GAME_SCENE_HEIGHT);
-                    } else if (view instanceof PowerUp) {
-                        if (((PowerUp) view).getType() == 1) {
-                            Constants.TEMPERATURE_LIMIT = Constants.TEMPERATURE_LIMIT + 5;
-                        } else {
-
-                            if (attackSystem.getLevel()==BeamLevel.LEVEL_1) attackSystem.setLevel(BeamLevel.LEVEL_2);
-                            if (attackSystem.getLevel()==BeamLevel.LEVEL_2) attackSystem.setLevel(BeamLevel.LEVEL_3);
-
-                        }
+                        stackPane.getChildren().remove(view);
+                        stuff.remove(view);
                     }
-                    stackPane.getChildren().remove(view);
-                    stuff.remove(view);
                 }
             }
         }
@@ -709,6 +721,8 @@ public class GameSceneBuilder {
         seedPlayer.pause();
         shootPlayer.pause();
         bombPlayer.pause();
+        //todo save
+        //save();
     }
 
     private void getNextWave(int wave, int level) {
@@ -748,11 +762,11 @@ public class GameSceneBuilder {
         return scene;
     }
 
-    public void getBomb() {
+    public void getBomb(int index) {
 
         Bomb bomb = new Bomb();
-        bomb.setTranslateY(currentPlayer.spaceShip.getTranslateY() + 300);
-        bomb.setTranslateX(currentPlayer.spaceShip.getTranslateX());
+        bomb.setTranslateY(spaceShips.get(index).getTranslateY() + 300);
+        bomb.setTranslateX(spaceShips.get(index).getTranslateX());
 
 
         stackPane.getChildren().addAll(bomb);
