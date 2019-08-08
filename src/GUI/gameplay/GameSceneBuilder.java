@@ -4,7 +4,7 @@ import Controller.CellTower;
 import Controller.Constants;
 import GUI.MainStageHolder;
 import GUI.menues.MainMenuSceneBuilder;
-import GUI.menues.RankingSceneBuilder;
+
 import enums.BeamLevel;
 import enums.KeyState;
 import javafx.animation.*;
@@ -34,6 +34,12 @@ public class GameSceneBuilder {
 
     private Scene scene;
     static Timeline timeline;
+    static Timeline timeline1 = new Timeline();
+    static Timeline timeline2 = new Timeline();
+    static Timeline timeline3 = new Timeline();
+    static Timeline timeline4 = new Timeline();
+    static Timeline timeline5 = new Timeline();
+
     public static GameSceneBuilder currentGameSceneBuilder;
 
     public StackPane stackPane;
@@ -452,30 +458,29 @@ public class GameSceneBuilder {
         timeline.setCycleCount(Timeline.INDEFINITE);
         timeline.playFromStart();
 
-        Timeline timeline1 = new Timeline();
+
         timeline1.getKeyFrames().addAll(throwKeyFrame);
         timeline1.setCycleCount(Timeline.INDEFINITE);
         if (!isMulti || isServer)
             timeline1.playFromStart();
 
-        Timeline timeline2 = new Timeline();
+
         timeline2.getKeyFrames().addAll(moveKeyFrame, picFrame);
         timeline2.setCycleCount(Timeline.INDEFINITE);
         timeline2.playFromStart();
 
-        Timeline timeline3 = new Timeline();
         timeline3.getKeyFrames().addAll(motion);
         timeline3.setCycleCount(Timeline.INDEFINITE);
         timeline3.playFromStart();
 
 
-        Timeline timeline4 = new Timeline();
+
         timeline4.getKeyFrames().addAll(serverTransmitFrame);
         timeline4.setCycleCount(Timeline.INDEFINITE);
         if (isMulti && isServer)
             timeline4.playFromStart();
 
-        Timeline timeline5 = new Timeline();
+
         timeline5.getKeyFrames().addAll(clientTransmitFrame);
         timeline5.setCycleCount(Timeline.INDEFINITE);
         if (isMulti && !isServer)
@@ -519,10 +524,16 @@ public class GameSceneBuilder {
             gameSoundPlayer.pause();
             seedPlayer.pause();
             shootPlayer.pause();
+            timeline.stop();
+            timeline1.stop();
+            timeline2.stop();
+            timeline3.stop();
+            timeline4.stop();
+            timeline5.stop();
         }
-        else if (currentPlayer.heartNum==0 && isMulti){
-            MainStageHolder.stage.setScene(new RankingSceneBuilder().build(players).getScene());
-        }
+//        else if (currentPlayer.heartNum==0 && isMulti){
+//            MainStageHolder.stage.setScene(new RankingSceneBuilder().build(players).getScene());
+//        }
 
     }
 
@@ -730,8 +741,13 @@ public class GameSceneBuilder {
         seedPlayer.pause();
         shootPlayer.pause();
         bombPlayer.pause();
-        //todo save
-        //save();
+        timeline.stop();
+        timeline1.stop();
+        timeline2.stop();
+        timeline3.stop();
+        timeline4.stop();
+        timeline5.stop();
+
     }
 
     private void getNextWave(int wave, int level) {

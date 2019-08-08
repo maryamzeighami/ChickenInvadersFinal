@@ -63,6 +63,8 @@ public class MainMenuSceneBuilder {
 
         if (player.getCurrentGame() == null){
             resumeBut.setDisable(true);
+            menuePlayer.pause();
+            menuePlayer.getOnStopped();
         }
 
 

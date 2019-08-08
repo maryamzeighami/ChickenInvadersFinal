@@ -12,7 +12,7 @@ public class Player{
     public Player(String name) {
         this.name = name;
         numberOfBombs=3;
-        heartNum=1000;
+        heartNum=5;
     }
 
     public Game getCurrentGame() {

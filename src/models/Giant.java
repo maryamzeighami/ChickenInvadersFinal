@@ -28,9 +28,9 @@ public class Giant extends Chicken {
     }
     public Giant(int level ){
 
-        super(image[level-1]);
+        super(image[(level-1)*3]);
 
-        this.shapelevel= level;
+        this.shapelevel= (level-1)*3;
 
         setFitWidth(600);
         setFitHeight(600);
@@ -43,8 +43,8 @@ public class Giant extends Chicken {
     @Override
     public void blink() {
 
-        if (getImage().equals(image[shapelevel-1])) setImage(image[shapelevel]);
-        else if (getImage().equals(image[shapelevel])) setImage(image[shapelevel+1]);
-        else if (getImage().equals(image[shapelevel+1])) setImage(image[shapelevel-1]);
+        if (getImage().equals(image[shapelevel])) setImage(image[shapelevel+1]);
+        else if (getImage().equals(image[shapelevel+1])) setImage(image[shapelevel+2]);
+        else if (getImage().equals(image[shapelevel+2])) setImage(image[shapelevel]);
     }
 }
