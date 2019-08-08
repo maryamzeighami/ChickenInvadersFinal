@@ -98,6 +98,7 @@ public class GameSceneBuilder {
 //    SpaceShip spaceShip;
     public ArrayList<SpaceShip> spaceShips= new ArrayList<>();
     public ArrayList<Player> players = new ArrayList<>();
+    private boolean finished = false;
 
     public GameSceneBuilder builder(Player player, boolean resume) {
 
@@ -741,11 +742,13 @@ public class GameSceneBuilder {
                 if (isMulti) cellTower.transmitScores();
                 currentPlayer.coin = 0;
             }
-            getNextWave(wave, level);
+            if (!finished)
+                getNextWave(wave, level);
         }
     }
 
     private void win() {
+        finished = true;
         timeline.stop();
         timeline1.stop();
         timeline2.stop();
