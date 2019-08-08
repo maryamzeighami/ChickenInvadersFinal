@@ -69,7 +69,7 @@ public class Save {
                     while (!line2.equals("End of Transmission")) {
                         ArrayList<Chicken> chickens = new ArrayList<>();
                         for (String position : line2.split(";")) {
-                            int level = Integer.parseInt(position.split(" ")[0]);
+                             int level = Integer.parseInt(position.split(" ")[0]);
                             double x = Double.parseDouble(position.split(" ")[1]);
                             double y = Double.parseDouble(position.split(" ")[2]);
                             Chicken chicken;

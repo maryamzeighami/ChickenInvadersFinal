@@ -858,6 +858,8 @@ public class GameSceneBuilder {
         chickens = enemySystem.addCircle(num, level);
 
         stackPane.getChildren().addAll(chickens);
+        currentPlayer.spaceShip.setTranslateX(0);
+        currentPlayer.spaceShip.setTranslateY(0);
         // todo circle move
 
     }
@@ -1009,26 +1011,6 @@ public class GameSceneBuilder {
 
     }
 
-//    void save() {
-//        Game game = new Game();
-//
-//        game.spaceShip = currentPlayer.spaceShip;
-//        game.score= currentPlayer.score;
-//        game.level= this.level;
-//        game.wave= this.wave;
-//        game.numberOfBombs= currentPlayer.numberOfBombs;
-//        game.numberOfSeeds=currentPlayer.coin;
-//        game.healthNumber= currentPlayer.heartNum;
-//
-//        for (Chicken chicken : chickens) {
-//            ChickenSave newChicken= new ChickenSave(chicken);
-//            game.chickens.add(newChicken);
-//        }
-//
-//        // TODO: 6/29/19 save scores and .... (SAVE_JSON)
-//
-//        currentPlayer.setCurrentGame(game);
-//    }
 
 
     public void killChicken(int i) {

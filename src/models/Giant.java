@@ -15,7 +15,7 @@ public class Giant extends Chicken {
         image[3] = new Image(new File(System.getProperty("user.dir") + "/src/pics/giant2.png").toURI().toString());
         image[4] = new Image(new File(System.getProperty("user.dir") + "/src/pics/giant2B.png").toURI().toString());
         image[5] = new Image(new File(System.getProperty("user.dir") + "/src/pics/giant2C.png").toURI().toString());
-        image[6] = new Image(new File(System.getProperty("user.dir") + "/src/pics/giant1.png").toURI().toString());
+        image[6] = new Image(new File(System.getProperty("user.dir") + "/src/pics/giant3.png").toURI().toString());
         image[7] = new Image(new File(System.getProperty("user.dir") + "/src/pics/giant3B.png").toURI().toString());
         image[8] = new Image(new File(System.getProperty("user.dir") + "/src/pics/giant3C.png").toURI().toString());
         image[9] = new Image(new File(System.getProperty("user.dir") + "/src/pics/giant2.png").toURI().toString());
