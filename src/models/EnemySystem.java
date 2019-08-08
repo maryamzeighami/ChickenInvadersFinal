@@ -235,11 +235,11 @@ public class EnemySystem {
         chickens = new Chicken[1];
 
 
-        Giant giant = new Giant(1);
+        Giant giant = new Giant(level);
         giant.setTranslateX(0);
         giant.setTranslateY(-100);
         chickens[0] = giant;
-        return new ArrayList<Chicken>(Arrays.asList(chickens));
+        return new ArrayList<>(Arrays.asList(chickens));
 
 
     }

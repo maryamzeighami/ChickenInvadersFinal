@@ -706,7 +706,6 @@ public class GameSceneBuilder {
 
     private void checkChickens() {
         if (chickens.size() == 0) {
-            System.out.println("wave=" + wave);
             wave++;
             if (wave == 6) {
                 wave = 1;
@@ -720,6 +719,7 @@ public class GameSceneBuilder {
                 if (isMulti) cellTower.transmitScores();
                 currentPlayer.coin = 0;
             }
+            System.out.println("wave=" + wave);
             getNextWave(wave, level);
         }
     }
@@ -747,7 +747,7 @@ public class GameSceneBuilder {
         if (wave == 4) {
             getRandom(10,level);
         }
-        if (level==5){
+        if (wave==5){
             getGiant(level);
         }
     }
