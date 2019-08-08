@@ -746,17 +746,17 @@ public class GameSceneBuilder {
     }
 
     private void win() {
-        MainStageHolder.stage.setScene(new LastSceneBuilder().build(currentPlayer, true).getScene());
-        gameSoundPlayer.pause();
-        seedPlayer.pause();
-        shootPlayer.pause();
-        bombPlayer.pause();
         timeline.stop();
         timeline1.stop();
         timeline2.stop();
         timeline3.stop();
         timeline4.stop();
         timeline5.stop();
+        MainStageHolder.stage.setScene(new LastSceneBuilder().build(currentPlayer, true).getScene());
+        gameSoundPlayer.pause();
+        seedPlayer.pause();
+        shootPlayer.pause();
+        bombPlayer.pause();
 
     }
 

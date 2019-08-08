@@ -59,8 +59,8 @@ public class LastSceneBuilder {
         }
         if (flag){
             winningSoundPlayer.play();
-//            imageView=new ImageView(new Image(new File(System.getProperty("user.dir")
-//                    + "/src/pics/tenor.gif").toURI().toString()));
+            imageView=new ImageView(new Image(new File(System.getProperty("user.dir")
+                    + "/src/pics/tenor.gif").toURI().toString()));
 
             message.setText("YOU MADE IT "+ player.getName()+ " !");
 
