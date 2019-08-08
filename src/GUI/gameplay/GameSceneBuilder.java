@@ -935,10 +935,10 @@ public class GameSceneBuilder {
 
     private void circleMove() {
         for (int i = 0; i < chickens.size(); i++) {
-
-            double teta = Math.atan(chickens.get(i).getTranslateX()/ chickens.get(i).getTranslateY()) + Math.toDegrees(1);
-
-
+            double teta = Math.atan(chickens.get(i).getTranslateY()/ chickens.get(i).getTranslateX());
+            if (chickens.get(i).getTranslateX() < 0)
+                teta = Math.PI + teta;
+            teta += Math.toDegrees(0.1);
             TranslateTransition transition = new TranslateTransition();
             transition.setNode(chickens.get(i));
             transition.setDuration(Duration.millis(500));

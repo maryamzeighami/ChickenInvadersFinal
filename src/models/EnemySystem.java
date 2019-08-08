@@ -140,7 +140,7 @@ public class EnemySystem {
                 radiuse = 230;
                 chickens[i].setTranslateX(radiuse * Math.cos(teta));
                 chickens[i].setTranslateY(radiuse * Math.sin(teta));
-            } else if (i < 45) {
+            } else {
                 angle_velocity= (2 * Math.PI) /20;
 
                 chickens[i] = new Chicken3();
@@ -152,7 +152,7 @@ public class EnemySystem {
 
         }
 
-        return new ArrayList<Chicken>(Arrays.asList(chickens));
+        return new ArrayList<>(Arrays.asList(chickens));
     }
 
 
