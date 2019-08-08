@@ -18,7 +18,6 @@ public class AttackSystem {
     }
 
     public Beam[] getBeams(ImageView spaceShip) {
-        System.out.println(tempreture);
         if (this.tempreture >= Constants.TEMPERATURE_LIMIT)
             return null;
 

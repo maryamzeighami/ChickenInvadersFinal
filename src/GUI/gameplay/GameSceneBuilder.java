@@ -49,6 +49,7 @@ public class GameSceneBuilder {
     boolean isMulti= false;
     int myIndex;
     public final static Object lock = new Object();
+    boolean moveFlag = false;
 
 
     Media bombSound = new Media(new File(System.getProperty("user.dir") + "/src/sounds/bomb.wav").toURI().toString());
@@ -485,6 +486,16 @@ public class GameSceneBuilder {
         timeline5.setCycleCount(Timeline.INDEFINITE);
         if (isMulti && !isServer)
             timeline5.playFromStart();
+
+        KeyFrame debug = new KeyFrame(Duration.millis(5000), event -> {
+            /*for (Chicken chicken:chickens) {
+                System.out.println(chicken.getTranslateX() + " " + chicken.getTranslateY());
+            }*/
+        });
+        Timeline timeline6 = new Timeline();
+        timeline6.getKeyFrames().addAll(debug);
+        timeline6.setCycleCount(Timeline.INDEFINITE);
+        timeline6.playFromStart();
         // mouse handler
         scene.setOnMouseMoved(event -> {
             if (!currentPlayer.spaceShip.dontMove) {
@@ -730,7 +741,6 @@ public class GameSceneBuilder {
                 if (isMulti) cellTower.transmitScores();
                 currentPlayer.coin = 0;
             }
-            System.out.println("wave=" + wave);
             getNextWave(wave, level);
         }
     }
@@ -754,16 +764,16 @@ public class GameSceneBuilder {
         if (wave == 1) {
             getRec(45, level);
         }
-        if (wave == 2) {
+        else if (wave == 2) {
             getRandom(8, level);
         }
-        if (wave == 3) {
+        else if (wave == 3) {
             getCircle(45, level);
         }
-        if (wave == 4) {
+        else if (wave == 4) {
             getRandom(10,level);
         }
-        if (wave==5){
+        else if (wave==5){
             getGiant(level);
         }
     }
@@ -837,19 +847,12 @@ public class GameSceneBuilder {
 
     public void getRec(int number, int level) {
         chickens = enemySystem.addRec(number, level);
-        initMove();
         stackPane.getChildren().addAll(chickens);
-        new Thread(() -> {
-            try {
-                TimeUnit.MILLISECONDS.sleep(4000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }).start();
-
+        initMove();
     }
 
     private void initMove() {
+        moveFlag = true;
         for (ImageView chicken : chickens) {
             double destX = chicken.getTranslateX();
             chicken.setTranslateX(random.nextInt(2) == 1 ? -Constants.GAME_SCENE_WIDTH : Constants.GAME_SCENE_WIDTH);
@@ -858,6 +861,9 @@ public class GameSceneBuilder {
             transition.setDuration(Duration.millis(2000));
             transition.setNode(chicken);
             transition.playFromStart();
+            transition.setOnFinished(event -> {
+                moveFlag = false;
+            });
         }
     }
 
@@ -882,23 +888,21 @@ public class GameSceneBuilder {
 
     public void getGiant(int level) {
         chickens = enemySystem.getGiant(level);
-
         stackPane.getChildren().addAll(chickens);
-        System.out.println("giant");
-        System.out.println(chickens.get(0));
     }
 
 
     private void recMove() {
-
-        for (int i = 0; i < chickens.size(); i++) {
-            TranslateTransition transition = new TranslateTransition();
-            transition.setNode(chickens.get(i));
-            transition.setDuration(Duration.millis(1500));
-            transition.setToX(chickens.get(i).getTranslateX() + 30);
-            transition.setCycleCount(2);
-            transition.setAutoReverse(true);
-            transition.playFromStart();
+        if (!moveFlag) {
+            for (int i = 0; i < chickens.size(); i++) {
+                TranslateTransition transition = new TranslateTransition();
+                transition.setNode(chickens.get(i));
+                transition.setDuration(Duration.millis(1500));
+                transition.setToX(chickens.get(i).getTranslateX() + 30);
+                transition.setCycleCount(2);
+                transition.setAutoReverse(true);
+                transition.playFromStart();
+            }
         }
 
     }

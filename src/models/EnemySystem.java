@@ -52,6 +52,7 @@ public class EnemySystem {
             case 2:
 
                 for (int i = 0; i < numbers; i++) {
+                    System.out.println(i);
                     if (i < numbers / 2) {
                         chickens[i] = new Chicken1();
                     } else {
@@ -81,11 +82,11 @@ public class EnemySystem {
 //                        chickens[i] = new Chicken3();
 //                    }
 
-                    if (i%3==1)
+                    if (i%3==0)
                         chickens[i]= new Chicken1();
                     else if (i%3==1)
                         chickens[i]= new Chicken2();
-                    else if (i% 3==0){
+                    else if (i% 3==2){
                         chickens[i]= new Chicken3();
                     }
                 }
@@ -108,15 +109,17 @@ public class EnemySystem {
                     }
                 }
                 break;
-
         }
         for (int i = 0; i < numbers; i++) {
-
-            chickens[i].setTranslateX(((colum - 1) / 2 - i % colum) * Constants.CHICKEN_SIZE);
-            chickens[i].setTranslateY((i / colum) * Constants.CHICKEN_SIZE / 2 - 300);
+            try {
+                chickens[i].setTranslateX(((colum - 1) / 2 - i % colum) * Constants.CHICKEN_SIZE);
+                chickens[i].setTranslateY((i / colum) * Constants.CHICKEN_SIZE / 2 - 300);
+            } catch (Exception e){
+                System.out.println(e.getMessage());
+                System.out.println(i);
+            }
         }
-
-        return new ArrayList<Chicken>(Arrays.asList(chickens));
+        return new ArrayList<>(Arrays.asList(chickens));
 
     }
 
