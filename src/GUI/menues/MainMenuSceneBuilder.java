@@ -86,12 +86,12 @@ public class MainMenuSceneBuilder {
         startBut.setOnAction(event -> {
             menuePlayer.pause();
             menuePlayer.getOnStopped();
-            Scene scene = new GameSceneBuilder().builder(player).getScene();
+            Scene scene = new GameSceneBuilder().builder(player,false).getScene();
             MainStageHolder.stage.setScene(scene);
         });
         resumeBut.setOnAction(event -> {
             //todo
-            Scene scene = new GameSceneBuilder().builder(player).getScene();
+            Scene scene = new GameSceneBuilder().builder(player,true).getScene();
             MainStageHolder.stage.setScene(scene);
         });
 

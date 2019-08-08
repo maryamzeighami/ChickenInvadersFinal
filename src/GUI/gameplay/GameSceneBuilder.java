@@ -92,7 +92,7 @@ public class GameSceneBuilder {
     public ArrayList<SpaceShip> spaceShips= new ArrayList<>();
     public ArrayList<Player> players = new ArrayList<>();
 
-    public GameSceneBuilder builder(Player player) {
+    public GameSceneBuilder builder(Player player, boolean resume) {
 
         currentPlayer= player;
         currentGameSceneBuilder= this;
@@ -101,7 +101,7 @@ public class GameSceneBuilder {
 
 
         // resuummmmmm
-        if (currentPlayer.getCurrentGame() != null) {
+        if (resume) {
             currentPlayer.spaceShip = currentPlayer.getCurrentGame().spaceShip;
             chickens = currentPlayer.getCurrentGame().chickens;
             level= currentPlayer.getCurrentGame().level;
@@ -214,7 +214,7 @@ public class GameSceneBuilder {
             players.add(currentPlayer);
         }
         scene = new Scene(stackPane, Constants.GAME_SCENE_WIDTH, Constants.GAME_SCENE_HEIGHT);
-        if (currentPlayer.getCurrentGame() == null) {
+        if (!resume) {
             getRec(45, level);
         }
         else {
@@ -497,7 +497,7 @@ public class GameSceneBuilder {
         isMulti=true;
         if (i==0) isServer=true;
         currentPlayer=players.get(i);
-        builder(currentPlayer);
+        builder(currentPlayer,false);
         for (int j = 0; j < players.size(); j++) {
             players.get(j).spaceShip = new SpaceShip(spaceShipImage);
             players.get(j).spaceShip.setFitHeight(130);
